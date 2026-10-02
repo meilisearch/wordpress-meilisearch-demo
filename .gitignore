@@ -5,3 +5,5 @@ test-results/
 playwright-report/
 __pycache__/
 .plugin/
+scripts/.venv/
+scripts/.cache/
