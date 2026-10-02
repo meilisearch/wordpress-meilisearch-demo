@@ -101,9 +101,11 @@ wordpress-meilisearch-demo/
 ### 4.2 Image
 
 - Base: `wordpress:php8.3-apache`, plus WP-CLI (pinned version, checksum verified), `mariadb-server` (only in the `fly` target), `supervisor` and `less`.
-- Multi-stage build:
-  1. A `plugin` stage (composer and node) uses the `additional_contexts: plugin` entry pointing at `MEILISEARCH_PLUGIN_PATH`. It runs that checkout's `bin/build-zip.sh`.
-  2. The final stage copies `build/meilisearch/` to `wp-content/plugins/meilisearch`.
+- Multi-stage build: `composer install --no-dev` and the asset build run on the plugin source, the same way the plugin's own `Dockerfile.dev` does. The build doesn't go through `bin/build-zip.sh`, which needs `git ls-files`: a plugin worktree's `.git` file points outside the build context.
+- The plugin source comes in two ways:
+  - Compose passes it as the named build context `plugin` (`MEILISEARCH_PLUGIN_PATH`).
+  - The production `Dockerfile` reads it from `.plugin/`, which `bin/fly-deploy.sh` fills with `git archive` before `fly deploy`. Fly's remote builder has no named contexts.
+- The plugin, WooCommerce, the theme and the mu-plugin live under `/opt` and are symlinked into `wp-content`. `/var/www/html` is a volume, so files copied there at build time would go stale.
 - WooCommerce: installed at build time with `wp plugin install woocommerce --version=<pinned>` into the image. This happens only for `SITE=shop`.
 - `data/$SITE` is copied into `/opt/demo/data`.
 - Targets: `dev` (Compose, external MariaDB) and `fly` (adds MariaDB and supervisord).
@@ -119,7 +121,7 @@ On every start:
    1. `wp core install`.
    2. Activate the theme, WooCommerce (shop) and the plugin.
    3. `wp eval-file /opt/demo/$SITE/setup.php`, which sets options and imports `data/`.
-   4. Connect the plugin to Meilisearch.
+   4. `wp meilisearch connect` (§ 8), which creates the indexes, applies settings and creates the browser search key.
    5. `wp meilisearch reindex` (synchronous).
    6. Enable "Replace site search", highlighting and autocomplete.
    7. Touch the marker.
@@ -175,7 +177,7 @@ Both themes are block themes (`theme.json` v3) with no build step. CSS lives in 
   - WooCommerce block templates are overridden: `archive-product`, `product-search-results` and `single-product`.
   - Product images sit in a white "mat" frame.
 - **Search results:**
-  - The left column is WooCommerce's own Product Filters blocks: attribute filters for `pa_department`, `pa_century` and `pa_medium`, plus the price filter and the stock filter. These produce the `filter_*` / `min_price` / `max_price` query vars the plugin translates.
+  - The left column is WooCommerce's own Product Filters blocks: attribute filters for `pa_department`, `pa_century` and `pa_medium`, plus the price filter and the rating filter. The attribute IDs are fixed at 1–6 by creating the attributes in order on a fresh install. Any filter whose URL the plugin doesn't translate is dropped from the template instead of being shown falling back. These produce the `filter_*` / `min_price` / `max_price` query vars the plugin translates.
   - Above the grid sits the WooCommerce catalog sorting.
   - The right column holds the Under the hood panel.
   - Implementation must verify that the plugin intercepts the URLs WooCommerce's current filter blocks generate (spec § 8.5 of the plugin). If a block emits something the plugin declines to translate, the search still works through MySQL, the panel shows "MySQL (not intercepted)", and the gap is logged as a plugin issue. It is not hidden.
@@ -209,7 +211,9 @@ A must-use plugin, namespaced `MeiliDemo`, with no build step. It only uses the 
 
 - On blog search pages only, the demo layer sends one search to the content index with the same `q` and the same filter minus the facet's own clause. It asks for `facets: ["tax_category_ids", "year"]` and `limit: 0`, through a plain server-side `wp_remote_post` to `MEILISEARCH_HOST` with `MEILISEARCH_ADMIN_KEY`. The plugin's `Client` is internal and is not used. The index UID is read from the recorded request (§ 6.2), so the demo never recomputes the prefix. This request is excluded from the recorder.
 - `year` is a demo-only field added through `meilisearch_document`. Making it filterable also needs `meilisearch_index_settings` to add it to `filterableAttributes`.
-- The template states in small print that these counts come from the demo. The links remain plain `category_name` and `year` query vars.
+- The template states in small print that these counts come from the demo.
+- **Topic links** are plain `category_name` query vars.
+- **Year links** use a demo query var, `published=YYYY`. The plugin sends WordPress's own `year` var to MySQL; it only translates `date_query` `after`/`before` ranges. A `pre_get_posts` callback at priority 1 turns `published` into `date_query: [{after: 'YYYY-01-01 00:00:00', before: 'YYYY-12-31 23:59:59', inclusive: true}]` on the main search query. That runs before the plugin's own `pre_get_posts` check, so the request is intercepted and the panel shows the resulting `date` range filter.
 
 ### 6.5 Autocomplete subtitles
 
@@ -243,7 +247,7 @@ Python 3.12, standard library plus `requests`, `Pillow` and `pytest`. It runs on
   - Posts without a usable image get their topic's fallback image: a NASA-made image chosen by hand, listed in `nasa_topics.json`.
   - Inline `<figure>` images in the body follow the same rule and are removed when they fail it.
 - **Body:** sanitized to `p, h2, h3, ul, ol, li, blockquote, figure, figcaption, img, a, strong, em`. All attributes are stripped except `href` and `src`, and kept inline images are rewritten to local files.
-- **Other fields:** `excerpt`, `author` (the display name, or "NASA Science" when empty), `date_gmt`, `topic`, `categories[]` (source category names kept as WordPress tags), `source_url` and `image`. About 5 posts per topic are marked `sticky` to feed the home hero.
+- **Other fields:** `excerpt`, `author` (the display name, or "NASA Science" when empty), `date_gmt`, `topic`, `categories[]` (source category names kept as WordPress tags), `source_url` and `image`. The newest post with a NASA image in each topic is marked `sticky` (6 in all); the home hero shows the latest sticky post.
 
 ### 7.2 `met.py` → `data/shop/artworks.json`
 
@@ -272,6 +276,12 @@ Python 3.12, standard library plus `requests`, `Pillow` and `pytest`. It runs on
 
 This change is made in `meilisearch/meilisearch-wordpress` as a follow-up PR on top of #32, test-first, under the plugin spec's conventions.
 
+- **New command: `wp meilisearch connect`.** Today the connection flow (`IndexManager::connect()`: version check, index creation and settings, plugin-created search key) only runs when the Connection screen is saved in wp-admin. A site configured with `MEILISEARCH_HOST` and `MEILISEARCH_ADMIN_KEY` and set up from WP-CLI, like these demos, never gets a search key, so autocomplete never loads. The command:
+  - runs `connect()`;
+  - records `last_connect` like the screen does;
+  - prints the Meilisearch version and the key outcome (`created`, `kept` or `manual`);
+  - exits 1 on error.
+  The demo entrypoint calls it.
 - **New filter:** `apply_filters( 'meilisearch_autocomplete_subtitle_field', null, string $logical )`, where `$logical` is `content` or `products`.
   - A non-null return must be a valid field name, matching `^[A-Za-z0-9_.]+$`; anything else is ignored.
   - The field is passed in the localized config and added to `attributesToRetrieve` for that index.
