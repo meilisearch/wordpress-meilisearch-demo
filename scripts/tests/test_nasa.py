@@ -83,3 +83,20 @@ def test_author_normalisation():
     assert nasa._author(None) == "NASA Science"
     assert nasa._author("AMANDA BARNETT") == "Amanda Barnett"
     assert nasa._author("Alicia Cermak") == "Alicia Cermak"
+
+
+def test_strip_leading_nav_removes_breadcrumbs_and_menus():
+    html = ('<ol><li><a href="/">Science</a></li><li>Title…</li></ol>'
+            '<ul><li><a href="/w">Webb</a></li><li><ul><li><a href="/n">Latest News</a></li></ul></li></ul>'
+            '<p>Real text with a <a href="/x">link</a>.</p><ul><li>Kept list</li></ul>')
+    assert nasa.strip_leading_nav(html) == '<p>Real text with a <a href="/x">link</a>.</p><ul><li>Kept list</li></ul>'
+
+
+def test_strip_leading_nav_keeps_content_that_starts_with_text():
+    html = '<p>Intro</p><ul><li><a href="/a">A</a></li></ul>'
+    assert nasa.strip_leading_nav(html) == html
+
+
+def test_strip_leading_nav_keeps_a_leading_list_of_real_items():
+    html = '<ul><li>Launch: 2026</li><li>Crew: four</li></ul><p>Text</p>'
+    assert nasa.strip_leading_nav(html) == html

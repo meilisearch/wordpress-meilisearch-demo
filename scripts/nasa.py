@@ -49,6 +49,36 @@ def is_third_party(caption: str, filename: str, patterns: list[str]) -> bool:
     return False
 
 
+_LIST_TAG = re.compile(r"<(/?)(ol|ul)>")
+
+
+def _leading_list(content: str) -> tuple[str, str] | None:
+    """(the list block, the rest) when content starts with a balanced <ol>/<ul>, else None."""
+    if not content.startswith(("<ol>", "<ul>")):
+        return None
+    depth = 0
+    for match in _LIST_TAG.finditer(content):
+        depth += -1 if match.group(1) else 1
+        if depth == 0:
+            return content[: match.end()], content[match.end():]
+    return None
+
+
+def strip_leading_nav(content: str) -> str:
+    """Drops the breadcrumb and mission-menu lists some NASA pages render before the article text.
+
+    A leading list counts as navigation when it has links and almost no text outside them.
+    """
+    rest = content.lstrip()
+    while (block := _leading_list(rest)) is not None:
+        listing, after = block
+        outside_links = common.strip_tags(re.sub(r"<a\b[^>]*>.*?</a>", "", listing, flags=re.S))
+        if "<a " not in listing or len(outside_links) > 40:
+            break
+        rest = after.lstrip()
+    return rest if rest != content.lstrip() else content
+
+
 _FIGURE = re.compile(r"<figure>(.*?)</figure>", re.S)
 _IMG = re.compile(r'<img src="([^"]*)">')
 _CAPTION = re.compile(r"<figcaption>(.*?)</figcaption>", re.S)
@@ -169,7 +199,7 @@ def build(post: dict, topic: str, cfg: dict, patterns: list[str], topics_by_slug
     names = terms(post)
     if is_excluded(names, cfg["excluded_categories"]):
         return None
-    content = common.sanitize_html(post["content"]["rendered"])
+    content = strip_leading_nav(common.sanitize_html(post["content"]["rendered"]))
     if common.word_count(content) < cfg["min_words"]:
         return None
     pid = post["id"]
