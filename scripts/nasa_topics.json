@@ -1,0 +1,103 @@
+{
+  "excluded_categories": [
+    "Photojournal",
+    "APOD"
+  ],
+  "min_words": 150,
+  "topics": [
+    {
+      "slug": "missions",
+      "name": "Missions",
+      "quota": 170,
+      "categories": [
+        "Artemis",
+        "Kennedy Space Center",
+        "Johnson Space Center",
+        "Marshall Space Flight Center",
+        "Commercial Crew",
+        "Artemis 1",
+        "Artemis 2",
+        "NASA Headquarters",
+        "Armstrong Flight Research Center",
+        "Missions",
+        "Jet Propulsion Laboratory",
+        "Goddard Space Flight Center",
+        "Perseverance (Rover)",
+        "Mars 2020",
+        "Dawn"
+      ],
+      "fallback_image": "https://images-assets.nasa.gov/image/SLS_MAF_20260401_ArtemisIILaunch_05/SLS_MAF_20260401_ArtemisIILaunch_05~large.jpg"
+    },
+    {
+      "slug": "space-station",
+      "name": "Space Station",
+      "quota": 140,
+      "categories": [
+        "International Space Station (ISS)",
+        "ISS Research",
+        "Commercial Resupply",
+        "Humans in Space",
+        "Blogs"
+      ],
+      "fallback_image": "https://images-assets.nasa.gov/image/iss043e000030/iss043e000030~medium.jpg"
+    },
+    {
+      "slug": "earth",
+      "name": "Earth",
+      "quota": 180,
+      "categories": [
+        "Earth",
+        "Earth Observatory",
+        "Wildfires",
+        "Hurricanes & Typhoons",
+        "Extreme Weather Events"
+      ],
+      "fallback_image": "https://images-assets.nasa.gov/image/GSFC_20171208_Archive_e001646/GSFC_20171208_Archive_e001646~medium.jpg"
+    },
+    {
+      "slug": "solar-system",
+      "name": "Solar System",
+      "quota": 200,
+      "categories": [
+        "The Solar System",
+        "Mars",
+        "Saturn",
+        "Saturn Moons",
+        "Cassini",
+        "Earth's Moon",
+        "Jupiter",
+        "Curiosity (Rover)"
+      ],
+      "fallback_image": "https://images-assets.nasa.gov/image/PIA22766/PIA22766~small.jpg"
+    },
+    {
+      "slug": "universe",
+      "name": "Universe",
+      "quota": 200,
+      "categories": [
+        "Hubble Space Telescope",
+        "James Webb Space Telescope (JWST)",
+        "Galaxies",
+        "Exoplanets",
+        "Stars"
+      ],
+      "fallback_image": "https://images-assets.nasa.gov/image/GSFC_20171208_Archive_e001569/GSFC_20171208_Archive_e001569~small.jpg"
+    },
+    {
+      "slug": "history",
+      "name": "History",
+      "quota": 110,
+      "categories": [
+        "Skywatching",
+        "Glenn History",
+        "Apollo",
+        "NASA History",
+        "Solar Eclipses",
+        "Eclipses",
+        "Meteors & Meteorites",
+        "Aeronautics"
+      ],
+      "fallback_image": "https://images-assets.nasa.gov/image/jsc2007e034221/jsc2007e034221~medium.jpg"
+    }
+  ]
+}
