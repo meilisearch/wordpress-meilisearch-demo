@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>WordPress demos: mockups</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;700&family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; }
+  body { margin: 0; font-family: Inter, system-ui, sans-serif; background: #e9e9ee; color: #111; }
+  .switch { position: sticky; top: 0; z-index: 50; display: flex; gap: 8px; align-items: center; padding: 10px 20px; background: #16161d; color: #fff; font-size: 14px; }
+  .switch b { margin-right: 12px; }
+  .switch button { border: 1px solid #444; background: #26262f; color: #ddd; padding: 6px 14px; border-radius: 999px; cursor: pointer; font: inherit; }
+  .switch button.on { background: #ff5caa; border-color: #ff5caa; color: #fff; }
+  .switch .note { margin-left: auto; color: #9a9aa8; font-size: 13px; }
+  .demo { display: none; } .demo.on { display: block; }
+  .frame-label { max-width: 1240px; margin: 28px auto 8px; padding: 0 20px; font-size: 12px; letter-spacing: .08em; text-transform: uppercase; color: #666; font-weight: 600; }
+  .browser { max-width: 1240px; margin: 0 auto 8px; border-radius: 12px; overflow: hidden; box-shadow: 0 20px 50px rgba(0,0,0,.18); }
+  .chrome { background: #d9d9df; padding: 9px 14px; display: flex; gap: 8px; align-items: center; }
+  .chrome i { width: 11px; height: 11px; border-radius: 50%; background: #f26b5e; display: inline-block; } .chrome i:nth-child(2){background:#f5bf4f} .chrome i:nth-child(3){background:#5fc454}
+  .chrome .url { margin-left: 14px; background: #fff; border-radius: 6px; padding: 4px 12px; font-size: 12px; color: #555; flex: 1; max-width: 560px; }
+  mark { background: none; color: inherit; font-weight: 700; box-shadow: inset 0 -0.45em 0 rgba(255, 92, 170, .35); }
+  .meili-pill { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; padding: 3px 10px; border-radius: 999px; font-weight: 600; }
+
+  /* ---------- Mission Log ---------- */
+  .ml { background: #070b18; color: #e6e9f2; font-family: Inter, sans-serif; }
+  .ml a { color: inherit; text-decoration: none; }
+  .ml header { display: flex; align-items: center; gap: 32px; padding: 18px 40px; border-bottom: 1px solid #1c2440; }
+  .ml .logo { font-family: 'Space Grotesk'; font-weight: 700; font-size: 22px; letter-spacing: -.02em; display: flex; align-items: center; gap: 10px; }
+  .ml .logo span { width: 26px; height: 26px; border-radius: 50%; background: radial-gradient(circle at 35% 35%, #ffd27a, #ff6a3d 60%, #5b1d0e); box-shadow: 0 0 18px rgba(255,106,61,.6); }
+  .ml nav { display: flex; gap: 22px; font-size: 14px; color: #a9b1cc; }
+  .ml .search { margin-left: auto; position: relative; width: 340px; }
+  .ml .search input { width: 100%; background: #0f1630; border: 1px solid #2b3766; color: #fff; padding: 10px 14px 10px 36px; border-radius: 10px; font: inherit; font-size: 14px; }
+  .ml .search::before { content: "⌕"; position: absolute; left: 13px; top: 8px; color: #7d89b6; font-size: 17px; }
+  .ml .ac { position: absolute; top: 46px; left: 0; right: 0; background: #0f1630; border: 1px solid #2b3766; border-radius: 12px; padding: 8px; box-shadow: 0 18px 40px rgba(0,0,0,.5); z-index: 5; }
+  .ml .ac h6 { margin: 6px 8px; font-size: 11px; letter-spacing: .08em; text-transform: uppercase; color: #7d89b6; }
+  .ml .ac a { display: flex; gap: 10px; align-items: center; padding: 7px 8px; border-radius: 8px; font-size: 13.5px; }
+  .ml .ac a.act { background: #1b2650; }
+  .ml .ac img { width: 40px; height: 40px; object-fit: cover; border-radius: 6px; }
+  .ml .ac small { display: block; color: #7d89b6; font-size: 11.5px; }
+  .ml .ac .foot { border-top: 1px solid #22305c; margin-top: 6px; padding: 8px 8px 2px; font-size: 12px; color: #7d89b6; }
+  .ml .hero { display: grid; grid-template-columns: 1.4fr 1fr; gap: 0; min-height: 420px; }
+  .ml .hero .img { background: url(https://images-assets.nasa.gov/image/SLS_MAF_20260401_ArtemisIILaunch_05/SLS_MAF_20260401_ArtemisIILaunch_05~large.jpg) center/cover; }
+  .ml .hero .txt { padding: 48px 44px; display: flex; flex-direction: column; justify-content: center; background: linear-gradient(135deg,#0b1229,#070b18); }
+  .ml .kicker { color: #ff8a5c; font-size: 12px; font-weight: 600; letter-spacing: .12em; text-transform: uppercase; }
+  .ml h1 { font-family: 'Space Grotesk'; font-size: 40px; line-height: 1.08; letter-spacing: -.02em; margin: 12px 0; }
+  .ml .meta { color: #8c96b8; font-size: 13px; }
+  .ml .grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 22px; padding: 34px 40px 40px; }
+  .ml .card .ph { aspect-ratio: 4/3; border-radius: 10px; background-size: cover; background-position: center; margin-bottom: 12px; }
+  .ml .card h3 { font-family: 'Space Grotesk'; font-size: 17px; margin: 6px 0; line-height: 1.25; }
+  .ml .section-h { padding: 30px 40px 0; display: flex; align-items: baseline; justify-content: space-between; }
+  .ml .section-h h2 { font-family: 'Space Grotesk'; margin: 0; font-size: 22px; }
+  .ml .serp { display: grid; grid-template-columns: 220px 1fr 330px; gap: 32px; padding: 30px 40px 44px; }
+  .ml .facet h5 { font-size: 11px; letter-spacing: .1em; text-transform: uppercase; color: #7d89b6; margin: 0 0 10px; }
+  .ml .facet label { display: flex; justify-content: space-between; font-size: 13.5px; padding: 5px 0; color: #c5cbe0; }
+  .ml .facet label b { color: #6c7699; font-weight: 500; }
+  .ml .facet .on { color: #fff; } .ml .facet .on::before { content: "● "; color: #ff8a5c; }
+  .ml .facet + .facet { margin-top: 26px; }
+  .ml .q { font-family: 'Space Grotesk'; font-size: 28px; margin: 0 0 6px; }
+  .ml .chips { display: flex; gap: 8px; flex-wrap: wrap; margin: 14px 0 22px; font-size: 12.5px; }
+  .ml .chips span { border: 1px dashed #3a4a85; color: #b5bfe3; padding: 4px 10px; border-radius: 999px; }
+  .ml .res { display: grid; grid-template-columns: 150px 1fr; gap: 18px; padding: 18px 0; border-top: 1px solid #1a2341; }
+  .ml .res .ph { aspect-ratio: 4/3; border-radius: 8px; background-size: cover; background-position: center; }
+  .ml .res h3 { font-family: 'Space Grotesk'; margin: 4px 0 6px; font-size: 19px; }
+  .ml .res p { margin: 0; color: #aab2cf; font-size: 14px; line-height: 1.55; }
+  .ml .res mark { box-shadow: inset 0 -0.45em 0 rgba(255,138,92,.45); color: #fff; }
+  .ml .ac mark { box-shadow: inset 0 -0.45em 0 rgba(255,138,92,.45); color: #fff; }
+  .ml .meili-pill { background: rgba(255,138,92,.14); color: #ffae8a; }
+  .uth { background: #0c1330; border: 1px solid #2b3766; border-radius: 12px; padding: 16px; font-size: 12.5px; align-self: start; position: sticky; top: 60px; }
+  .uth h4 { margin: 0 0 4px; font-size: 14px; display: flex; justify-content: space-between; }
+  .uth .sub { color: #7d89b6; margin-bottom: 12px; }
+  .uth pre { margin: 0; font-family: 'JetBrains Mono'; font-size: 11.5px; line-height: 1.55; white-space: pre-wrap; color: #cfd6f3; background: #070b18; border-radius: 8px; padding: 12px; }
+  .uth .k { color: #8ab4ff; } .uth .s { color: #ffc28a; } .uth .n { color: #9be29b; }
+  .uth .cmp { margin-top: 12px; display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .uth .cmp div { border-radius: 8px; padding: 8px 10px; background: #070b18; }
+  .uth .cmp b { display: block; font-size: 18px; }
+  .uth .toggle { display: flex; margin-top: 12px; border: 1px solid #2b3766; border-radius: 8px; overflow: hidden; }
+  .uth .toggle span { flex: 1; text-align: center; padding: 6px; } .uth .toggle .on { background: #ff8a5c; color: #1a0c05; font-weight: 600; }
+  .ml footer { padding: 22px 40px; border-top: 1px solid #1c2440; color: #6c7699; font-size: 12px; display: flex; justify-content: space-between; }
+
+  /* ---------- Met Prints ---------- */
+  .mp { background: #f7f4ee; color: #1d1a16; }
+  .mp a { color: inherit; text-decoration: none; }
+  .mp .bar { background: #1d1a16; color: #e9e2d4; font-size: 12px; text-align: center; padding: 7px; letter-spacing: .04em; }
+  .mp header { display: flex; align-items: center; gap: 30px; padding: 20px 44px; border-bottom: 1px solid #e3dccd; background: #fbf9f4; }
+  .mp .logo { font-family: 'Cormorant Garamond'; font-size: 30px; font-weight: 600; letter-spacing: .01em; }
+  .mp .logo em { color: #a3242c; font-style: italic; }
+  .mp nav { display: flex; gap: 22px; font-size: 13.5px; color: #5c5446; }
+  .mp .search { margin-left: auto; position: relative; width: 360px; }
+  .mp .search input { width: 100%; border: 1px solid #cfc5b1; background: #fff; padding: 10px 14px; border-radius: 2px; font: inherit; font-size: 14px; }
+  .mp .cart { font-size: 13px; color: #5c5446; }
+  .mp .ac { position: absolute; top: 46px; left: 0; width: 440px; background: #fff; border: 1px solid #d8cfbd; padding: 10px; box-shadow: 0 18px 40px rgba(60,40,10,.18); z-index: 5; }
+  .mp .ac h6 { margin: 4px 6px 6px; font-size: 10.5px; letter-spacing: .12em; text-transform: uppercase; color: #8a7f6c; }
+  .mp .ac a { display: grid; grid-template-columns: 46px 1fr auto; gap: 12px; align-items: center; padding: 7px 6px; font-size: 13.5px; }
+  .mp .ac a.act { background: #f3eee3; }
+  .mp .ac img { width: 46px; height: 46px; object-fit: cover; }
+  .mp .ac small { display: block; color: #8a7f6c; font-size: 12px; }
+  .mp .ac .p { font-size: 13px; color: #5c5446; }
+  .mp .ac mark { box-shadow: inset 0 -0.45em 0 rgba(163,36,44,.22); }
+  .mp .hero { display: grid; grid-template-columns: 1fr 1.25fr; min-height: 440px; }
+  .mp .hero .txt { padding: 60px 52px; display: flex; flex-direction: column; justify-content: center; }
+  .mp .hero .img { background: #e8e1d2 url(https://images.metmuseum.org/CRDImages/as/web-large/DP130155.jpg) center/contain no-repeat; border-left: 1px solid #e3dccd; }
+  .mp h1 { font-family: 'Cormorant Garamond'; font-weight: 500; font-size: 52px; line-height: 1.02; margin: 10px 0 14px; }
+  .mp .kicker { font-size: 11.5px; letter-spacing: .16em; text-transform: uppercase; color: #a3242c; font-weight: 600; }
+  .mp .btn { display: inline-block; background: #1d1a16; color: #f7f4ee; padding: 12px 22px; font-size: 13.5px; margin-top: 18px; width: max-content; }
+  .mp .grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 28px; padding: 30px 44px 44px; }
+  .mp .card .ph { aspect-ratio: 4/5; background: #ece6d9 center/contain no-repeat; margin-bottom: 12px; border: 10px solid #fff; box-shadow: 0 6px 18px rgba(60,40,10,.12); }
+  .mp .card h3 { font-family: 'Cormorant Garamond'; font-size: 20px; font-weight: 600; margin: 4px 0 2px; line-height: 1.15; }
+  .mp .card .by { font-size: 13px; color: #6d6455; }
+  .mp .card .pr { font-size: 13.5px; margin-top: 6px; }
+  .mp .section-h { padding: 34px 44px 0; display: flex; justify-content: space-between; align-items: baseline; }
+  .mp .section-h h2 { font-family: 'Cormorant Garamond'; font-weight: 500; font-size: 30px; margin: 0; }
+  .mp .serp { display: grid; grid-template-columns: 230px 1fr 320px; gap: 34px; padding: 30px 44px 44px; }
+  .mp .facet h5 { font-size: 10.5px; letter-spacing: .14em; text-transform: uppercase; color: #8a7f6c; margin: 0 0 10px; }
+  .mp .facet label { display: flex; gap: 8px; font-size: 13.5px; padding: 4px 0; align-items: center; }
+  .mp .facet label b { margin-left: auto; color: #9c917c; font-weight: 400; }
+  .mp .facet label i { width: 13px; height: 13px; border: 1px solid #9c917c; display: inline-block; }
+  .mp .facet label.on i { background: #1d1a16; border-color: #1d1a16; }
+  .mp .facet + .facet { margin-top: 24px; }
+  .mp .range { height: 4px; background: #e0d8c7; position: relative; margin: 14px 4px; } .mp .range::after { content: ""; position: absolute; left: 0; right: 35%; top: 0; bottom: 0; background: #1d1a16; }
+  .mp .q { font-family: 'Cormorant Garamond'; font-weight: 500; font-size: 36px; margin: 0; }
+  .mp .tools { display: flex; justify-content: space-between; align-items: center; font-size: 13px; color: #6d6455; margin: 6px 0 4px; }
+  .mp .tools select { font: inherit; border: 1px solid #cfc5b1; background: #fff; padding: 5px 8px; }
+  .mp .chips { display: flex; gap: 8px; flex-wrap: wrap; margin: 12px 0 20px; font-size: 12.5px; }
+  .mp .chips span { border: 1px dashed #b9ad96; padding: 4px 10px; border-radius: 999px; color: #5c5446; }
+  .mp .rgrid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+  .mp .rgrid .card h3 mark { box-shadow: inset 0 -0.45em 0 rgba(163,36,44,.22); }
+  .mp .meili-pill { background: #efe6d6; color: #7a5b2a; }
+  .mp .sale { color: #a3242c; font-weight: 600; }
+  .mp .uth { background: #fff; border-color: #d8cfbd; color: #1d1a16; }
+  .mp .uth .sub { color: #8a7f6c; }
+  .mp .uth pre { background: #1d1a16; color: #efe6d6; }
+  .mp .uth .cmp div { background: #f3eee3; }
+  .mp .uth .toggle { border-color: #cfc5b1; } .mp .uth .toggle .on { background: #1d1a16; color: #f7f4ee; }
+  .mp .uth .k { color: #9ec3ff; } .mp .uth .s { color: #ffc89a; } .mp .uth .n { color: #a8e0a0; }
+  .mp .product { display: grid; grid-template-columns: 1.1fr 1fr; gap: 50px; padding: 40px 44px 50px; }
+  .mp .product .ph { background: #ece6d9 url(https://images.metmuseum.org/CRDImages/ep/web-large/DP-42549-001.jpg) center/contain no-repeat; aspect-ratio: 5/4; border: 18px solid #3b2a1a; box-shadow: inset 0 0 0 6px #f7f1e3, 0 14px 30px rgba(60,40,10,.25); }
+  .mp .product h1 { font-size: 44px; }
+  .mp .opt { margin-top: 18px; } .mp .opt h5 { font-size: 10.5px; letter-spacing: .14em; text-transform: uppercase; color: #8a7f6c; margin: 0 0 8px; }
+  .mp .opt span { display: inline-block; border: 1px solid #cfc5b1; padding: 7px 12px; margin: 0 6px 6px 0; font-size: 13px; background: #fff; }
+  .mp .opt span.on { border-color: #1d1a16; box-shadow: inset 0 0 0 1px #1d1a16; }
+  .mp dl { display: grid; grid-template-columns: 110px 1fr; gap: 6px 14px; font-size: 13.5px; margin-top: 22px; color: #4d4639; }
+  .mp dt { color: #8a7f6c; }
+  .mp footer { padding: 22px 44px; border-top: 1px solid #e3dccd; color: #8a7f6c; font-size: 12px; display: flex; justify-content: space-between; }
+  .caption { max-width: 1240px; margin: 0 auto 30px; padding: 0 20px; font-size: 13px; color: #555; }
+</style>
+</head>
+<body>
+<div class="switch">
+  <b>Meilisearch for WordPress: demo mockups</b>
+  <button class="on" onclick="show('ml',this)">Mission Log · NASA articles</button>
+  <button onclick="show('mp',this)">Met Prints · WooCommerce</button>
+  <span class="note">Static mockups, real NASA &amp; Met images. Nothing is built yet.</span>
+</div>
+
+<!-- ======================= MISSION LOG ======================= -->
+<div id="ml" class="demo on">
+  <div class="frame-label">1 · Home, with the plugin's autocomplete dropdown open (typing "artem")</div>
+  <div class="browser"><div class="chrome"><i></i><i></i><i></i><div class="url">blog.wordpress-meilisearch-demo.orb.local</div></div>
+  <div class="ml">
+    <header>
+      <div class="logo"><span></span>Mission Log</div>
+      <nav><a>Missions</a><a>Space Station</a><a>Earth</a><a>Solar System</a><a>Universe</a><a>History</a></nav>
+      <div class="search"><input value="artem">
+        <div class="ac" role="listbox">
+          <h6>Articles</h6>
+          <a class="act"><img src="https://images-assets.nasa.gov/image/SLS_MAF_20260401_ArtemisIILaunch_05/SLS_MAF_20260401_ArtemisIILaunch_05~large.jpg"><span><mark>Artem</mark>is II Lifts Off With Four Astronauts<small>Missions · Apr 1, 2026</small></span></a>
+          <a><img src="https://images-assets.nasa.gov/image/iss043e000030/iss043e000030~medium.jpg"><span>Orion Heat Shield Ready for <mark>Artem</mark>is III<small>Missions · Mar 12, 2026</small></span></a>
+          <a><img src="https://images-assets.nasa.gov/image/jsc2007e034221/jsc2007e034221~medium.jpg"><span>From Apollo to <mark>Artem</mark>is: 57 Years of Moon Rockets<small>History · Jul 20, 2026</small></span></a>
+          <div class="foot">↵ to see all 64 results for “artem”</div>
+        </div>
+      </div>
+    </header>
+    <div class="hero">
+      <div class="img"></div>
+      <div class="txt">
+        <div class="kicker">Missions · Featured</div>
+        <h1>Artemis II lifts off with four astronauts bound for the Moon</h1>
+        <p style="color:#aab2cf;line-height:1.6;font-size:15px">Orion and the Space Launch System rocket cleared Launch Complex 39B on Wednesday, beginning humanity's first crewed trip around the Moon in more than half a century.</p>
+        <div class="meta">Marshall Space Flight Center · April 1, 2026 · 6 min read</div>
+      </div>
+    </div>
+    <div class="section-h"><h2>Latest from the archive</h2><span class="meta">1,000 articles · searched by Meilisearch</span></div>
+    <div class="grid">
+      <div class="card"><div class="ph" style="background-image:url(https://images-assets.nasa.gov/image/GSFC_20171208_Archive_e001646/GSFC_20171208_Archive_e001646~medium.jpg)"></div><div class="kicker">Earth</div><h3>Auroras over North America, seen from space</h3><div class="meta">Goddard · Dec 8, 2025</div></div>
+      <div class="card"><div class="ph" style="background-image:url(https://images-assets.nasa.gov/image/PIA22766/PIA22766~small.jpg)"></div><div class="kicker">Solar System</div><h3>Cassini's grand finale between Saturn's rings</h3><div class="meta">JPL · Sep 15, 2025</div></div>
+      <div class="card"><div class="ph" style="background-image:url(https://images-assets.nasa.gov/image/GSFC_20171208_Archive_e001569/GSFC_20171208_Archive_e001569~small.jpg)"></div><div class="kicker">Universe</div><h3>Hubble revisits the Pinwheel Galaxy</h3><div class="meta">Goddard · Aug 2, 2025</div></div>
+      <div class="card"><div class="ph" style="background-image:url(https://images-assets.nasa.gov/image/PIA21496/PIA21496~medium.jpg)"></div><div class="kicker">Solar System</div><h3>Opportunity's last drive into Perseverance Valley</h3><div class="meta">JPL · Jun 10, 2025</div></div>
+    </div>
+    <footer><span>Content: NASA (public domain). Not endorsed by NASA.</span><span>Search by Meilisearch for WordPress</span></footer>
+  </div></div>
+
+  <div class="frame-label">2 · Search results page: the theme's own /?s= page, served by Meilisearch</div>
+  <div class="browser"><div class="chrome"><i></i><i></i><i></i><div class="url">blog.wordpress-meilisearch-demo.orb.local/?s=saturn+rngs&amp;category_name=solar-system</div></div>
+  <div class="ml">
+    <header>
+      <div class="logo"><span></span>Mission Log</div>
+      <nav><a>Missions</a><a>Space Station</a><a>Earth</a><a>Solar System</a><a>Universe</a><a>History</a></nav>
+      <div class="search"><input value="saturn rngs"></div>
+    </header>
+    <div class="serp">
+      <aside>
+        <div class="facet"><h5>Topic</h5>
+          <label>All topics <b>41</b></label><label class="on">Solar System <b>37</b></label><label>Universe <b>3</b></label><label>History <b>1</b></label></div>
+        <div class="facet"><h5>Year</h5>
+          <label>2026 <b>4</b></label><label>2025 <b>9</b></label><label>2017 <b>18</b></label><label>Earlier <b>6</b></label></div>
+        <div class="facet"><h5>Sort</h5>
+          <label class="on">Most relevant</label><label>Newest first</label><label>Oldest first</label></div>
+      </aside>
+      <main>
+        <h2 class="q">“saturn rngs”</h2>
+        <div class="meta">37 articles in Solar System · <span class="meili-pill">⚡ Meilisearch · 3 ms</span></div>
+        <div class="chips">Try: <span>saturn rngs</span><span>jupitr moons</span><span>"heat shield"</span><span>moon -apollo</span><span>astronot</span></div>
+        <div class="res"><div class="ph" style="background-image:url(https://images-assets.nasa.gov/image/PIA22766/PIA22766~small.jpg)"></div><div><div class="kicker">Solar System · Sep 15, 2025</div><h3>Cassini's Grand Finale Between <mark>Saturn</mark>'s <mark>Rings</mark></h3><p>…made 22 orbits that swooped between the <mark>rings</mark> and the planet before ending its mission with a final plunge into <mark>Saturn</mark>'s atmosphere…</p></div></div>
+        <div class="res"><div class="ph" style="background-image:url(https://images-assets.nasa.gov/image/GSFC_20171208_Archive_e001569/GSFC_20171208_Archive_e001569~small.jpg)"></div><div><div class="kicker">Solar System · Mar 3, 2025</div><h3>Webb Spots Faint New <mark>Rings</mark> Around <mark>Saturn</mark>'s Moon Hunt</h3><p>…infrared images show the <mark>ring</mark> particles are younger than the planet itself, a puzzle for models of <mark>Saturn</mark>'s formation…</p></div></div>
+        <div class="res"><div class="ph" style="background-image:url(https://images-assets.nasa.gov/image/PIA21496/PIA21496~medium.jpg)"></div><div><div class="kicker">Solar System · Jan 22, 2017</div><h3>Why Do <mark>Saturn</mark>'s <mark>Rings</mark> Have Ripples?</h3><p>…moonlets embedded in the A <mark>ring</mark> raise waves that Cassini's cameras captured at the edge of the Encke gap…</p></div></div>
+      </main>
+      <div class="uth">
+        <h4>Under the hood <span>▾</span></h4>
+        <div class="sub">What the plugin sent to Meilisearch for this WordPress search</div>
+<pre><span class="k">POST</span> /indexes/blog_content/search
+{
+  <span class="k">"q"</span>: <span class="s">"saturn rngs"</span>,
+  <span class="k">"filter"</span>: <span class="s">"post_type IN [\"post\"] AND
+    tax_category_ids IN [14]"</span>,
+  <span class="k">"page"</span>: <span class="n">1</span>, <span class="k">"hitsPerPage"</span>: <span class="n">10</span>,
+  <span class="k">"attributesToCrop"</span>: [<span class="s">"content:30"</span>],
+  <span class="k">"attributesToHighlight"</span>: [<span class="s">"title"</span>,<span class="s">"content"</span>]
+}</pre>
+        <div class="sub" style="margin:12px 0 0">From WP_Query: <code>s</code>, <code>category_name=solar-system</code>, <code>paged=1</code></div>
+        <div class="cmp"><div>Meilisearch<b>37 hits · 3 ms</b></div><div>MySQL LIKE<b>0 hits · 41 ms</b></div></div>
+        <div class="toggle"><span class="on">Meilisearch</span><span>Compare with MySQL</span></div>
+      </div>
+    </div>
+    <footer><span>Content: NASA (public domain). Not endorsed by NASA.</span><span>Search by Meilisearch for WordPress</span></footer>
+  </div></div>
+  <p class="caption">Topic and year links are ordinary WordPress query vars (<code>category_name</code>, <code>year</code>), which the plugin turns into Meilisearch filters. Counts come from a demo-side request, because v1 has no facet UI. The typo "rngs" still matches, while MySQL finds nothing.</p>
+</div>
+
+<!-- ======================= MET PRINTS ======================= -->
+<div id="mp" class="demo">
+  <div class="frame-label">1 · Home, with the autocomplete open (typing "van go")</div>
+  <div class="browser"><div class="chrome"><i></i><i></i><i></i><div class="url">shop.wordpress-meilisearch-demo.orb.local</div></div>
+  <div class="mp">
+    <div class="bar">Museum-quality prints of public-domain masterpieces from The Met's Open Access collection</div>
+    <header>
+      <div class="logo">Met <em>Prints</em></div>
+      <nav><a>Paintings</a><a>Japanese Prints</a><a>Drawings</a><a>Photographs</a><a>Artists</a></nav>
+      <div class="search"><input value="van go">
+        <div class="ac">
+          <h6>Prints</h6>
+          <a class="act"><img src="https://images.metmuseum.org/CRDImages/ep/web-large/DP-42549-001.jpg"><span>Wheat Field with Cypresses<small>Vincent <mark>van Go</mark>gh · 1889</small></span><span class="p">from $45</span></a>
+          <a><img src="https://images.metmuseum.org/CRDImages/ep/web-large/DT1502_cropped2.jpg"><span>Self-Portrait with a Straw Hat<small>Vincent <mark>van Go</mark>gh · 1887</small></span><span class="p">from $45</span></a>
+          <a><img src="https://images.metmuseum.org/CRDImages/rl/web-large/DT3154.jpg"><span>Madame Roulin and Her Baby<small>Vincent <mark>van Go</mark>gh · 1888</small></span><span class="p">from $45</span></a>
+          <a><img src="https://images.metmuseum.org/CRDImages/ep/web-large/DP-19279-001.jpg"><span>La Berceuse<small>Vincent <mark>van Go</mark>gh · 1889</small></span><span class="p">from $45</span></a>
+        </div>
+      </div>
+      <span class="cart">Cart (0)</span>
+    </header>
+    <div class="hero">
+      <div class="txt">
+        <div class="kicker">New in · Japanese Prints</div>
+        <h1>Under the Wave off Kanagawa</h1>
+        <p style="color:#5c5446;line-height:1.6">Katsushika Hokusai, ca. 1830–32. Printed on archival cotton rag from The Met's open-access scan.</p>
+        <div style="font-size:15px">From $45 · Unframed, black or oak frame</div>
+        <a class="btn">Choose size &amp; frame</a>
+      </div>
+      <div class="img"></div>
+    </div>
+    <div class="section-h"><h2>Collector favorites</h2><span style="font-size:13px;color:#6d6455">1,500 prints · searched by Meilisearch</span></div>
+    <div class="grid">
+      <div class="card"><div class="ph" style="background-image:url(https://images.metmuseum.org/CRDImages/ep/web-large/DP-20101-001.jpg)"></div><h3>The Dance Class</h3><div class="by">Edgar Degas · 1874</div><div class="pr">from $45</div></div>
+      <div class="card"><div class="ph" style="background-image:url(https://images.metmuseum.org/CRDImages/ep/web-large/DP119115.jpg)"></div><h3>The Harvesters</h3><div class="by">Pieter Bruegel the Elder · 1565</div><div class="pr"><span class="sale">$36</span> <s>$45</s></div></div>
+      <div class="card"><div class="ph" style="background-image:url(https://images.metmuseum.org/CRDImages/ad/web-large/DT78.jpg)"></div><h3>Heart of the Andes</h3><div class="by">Frederic Edwin Church · 1859</div><div class="pr">from $55</div></div>
+      <div class="card"><div class="ph" style="background-image:url(https://images.metmuseum.org/CRDImages/ep/web-large/DP-13139-001.jpg)"></div><h3>The Death of Socrates</h3><div class="by">Jacques Louis David · 1787</div><div class="pr">from $45</div></div>
+    </div>
+    <footer><span>Images: The Metropolitan Museum of Art, Open Access (CC0). Not affiliated with The Met.</span><span>Search by Meilisearch for WordPress</span></footer>
+  </div></div>
+
+  <div class="frame-label">2 · Product search: WooCommerce's search page, with layered nav, price filter and sorting translated into Meilisearch</div>
+  <div class="browser"><div class="chrome"><i></i><i></i><i></i><div class="url">shop…orb.local/?s=van+gof&amp;post_type=product&amp;filter_department=european-paintings&amp;max_price=80&amp;orderby=price</div></div>
+  <div class="mp">
+    <header>
+      <div class="logo">Met <em>Prints</em></div>
+      <nav><a>Paintings</a><a>Japanese Prints</a><a>Drawings</a><a>Photographs</a><a>Artists</a></nav>
+      <div class="search"><input value="van gof"></div>
+      <span class="cart">Cart (1)</span>
+    </header>
+    <div class="serp">
+      <aside>
+        <div class="facet"><h5>Department</h5>
+          <label class="on"><i></i>European Paintings <b>14</b></label><label><i></i>Robert Lehman Collection <b>3</b></label><label><i></i>Drawings and Prints <b>5</b></label></div>
+        <div class="facet"><h5>Century</h5>
+          <label><i></i>19th century <b>14</b></label></div>
+        <div class="facet"><h5>Medium</h5>
+          <label><i></i>Oil on canvas <b>12</b></label><label><i></i>Oil on paper <b>2</b></label></div>
+        <div class="facet"><h5>Price</h5><div class="range"></div><div style="font-size:12.5px;color:#6d6455">$36 – $80</div></div>
+      </aside>
+      <main>
+        <h2 class="q">Results for “van gof”</h2>
+        <div class="tools"><span>14 prints · <span class="meili-pill">⚡ Meilisearch · 4 ms</span></span><select><option>Sort by price: low to high</option></select></div>
+        <div class="chips">Try: <span>van gof</span><span>hokusai wave</span><span>degas dancer</span><span>"still life"</span><span>landscape -river</span></div>
+        <div class="rgrid">
+          <div class="card"><div class="ph" style="background-image:url(https://images.metmuseum.org/CRDImages/ep/web-large/DP-19279-001.jpg)"></div><h3>La Berceuse</h3><div class="by"><mark>Vincent van Gogh</mark> · 1889</div><div class="pr"><span class="sale">$36</span> <s>$45</s></div></div>
+          <div class="card"><div class="ph" style="background-image:url(https://images.metmuseum.org/CRDImages/ep/web-large/DP-42549-001.jpg)"></div><h3>Wheat Field with Cypresses</h3><div class="by"><mark>Vincent van Gogh</mark> · 1889</div><div class="pr">from $45</div></div>
+          <div class="card"><div class="ph" style="background-image:url(https://images.metmuseum.org/CRDImages/ep/web-large/DT1502_cropped2.jpg)"></div><h3>Self-Portrait with a Straw Hat</h3><div class="by"><mark>Vincent van Gogh</mark> · 1887</div><div class="pr">from $45</div></div>
+        </div>
+      </main>
+      <div class="uth">
+        <h4>Under the hood <span>▾</span></h4>
+        <div class="sub">WooCommerce's product query, as sent to Meilisearch</div>
+<pre><span class="k">POST</span> /indexes/shop_products/search
+{
+  <span class="k">"q"</span>: <span class="s">"van gof"</span>,
+  <span class="k">"filter"</span>: <span class="s">"attr_department IN
+    [\"European Paintings\"] AND
+    price &lt;= 80 AND in_stock = true"</span>,
+  <span class="k">"sort"</span>: [<span class="s">"price:asc"</span>],
+  <span class="k">"page"</span>: <span class="n">1</span>, <span class="k">"hitsPerPage"</span>: <span class="n">12</span>
+}</pre>
+        <div class="sub" style="margin:12px 0 0">From WC_Query: <code>filter_department</code>, <code>max_price</code>, <code>orderby=price</code>, hide out of stock</div>
+        <div class="cmp"><div>Meilisearch<b>14 hits · 4 ms</b></div><div>MySQL LIKE<b>0 hits · 58 ms</b></div></div>
+        <div class="toggle"><span class="on">Meilisearch</span><span>Compare with MySQL</span></div>
+      </div>
+    </div>
+  </div></div>
+  <p class="caption">The sidebar is WooCommerce's own layered nav (product attributes <code>pa_department</code>, <code>pa_century</code> and <code>pa_medium</code>) plus its price filter. The plugin translates them into Meilisearch filters, so the theme needs no search code of its own.</p>
+
+  <div class="frame-label">3 · Product page: a variable product (size × frame), the WooCommerce feature these prints exercise</div>
+  <div class="browser"><div class="chrome"><i></i><i></i><i></i><div class="url">shop…orb.local/print/wheat-field-with-cypresses/</div></div>
+  <div class="mp">
+    <div class="product">
+      <div class="ph"></div>
+      <div>
+        <div class="kicker">European Paintings</div>
+        <h1>Wheat Field with Cypresses</h1>
+        <div style="font-size:16px;color:#4d4639">Vincent van Gogh, 1889</div>
+        <div style="font-size:24px;margin-top:16px">$95</div>
+        <div class="opt"><h5>Size</h5><span>30 × 24 cm</span><span class="on">50 × 40 cm</span><span>70 × 56 cm</span><span>100 × 80 cm</span></div>
+        <div class="opt"><h5>Finish</h5><span>Unframed</span><span>Black frame</span><span class="on">Oak frame</span></div>
+        <a class="btn">Add to cart</a>
+        <dl><dt>Medium</dt><dd>Oil on canvas</dd><dt>Original</dt><dd>73.2 × 93.4 cm</dd><dt>Credit</dt><dd>Purchase, The Annenberg Foundation Gift, 1993</dd><dt>Source</dt><dd>The Met, Open Access (CC0) · object 436535</dd></dl>
+      </div>
+    </div>
+    <footer><span>Images: The Metropolitan Museum of Art, Open Access (CC0). Not affiliated with The Met.</span><span>Search by Meilisearch for WordPress</span></footer>
+  </div></div>
+</div>
+
+<script>
+function show(id, b) {
+  document.querySelectorAll('.demo').forEach(d => d.classList.toggle('on', d.id === id));
+  document.querySelectorAll('.switch button').forEach(x => x.classList.toggle('on', x === b));
+  window.scrollTo(0, 0);
+}
+</script>
+</body>
+</html>
