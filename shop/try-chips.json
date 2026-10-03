@@ -1,0 +1,7 @@
+[
+  { "q": "rembrant", "why": "Typo tolerance" },
+  { "q": "renior", "why": "Typo tolerance" },
+  { "q": "degas dancer", "why": "Artist and subject" },
+  { "q": "\"still life\"", "why": "Phrase search" },
+  { "q": "landscape -river", "why": "Leaving a word out" }
+]
