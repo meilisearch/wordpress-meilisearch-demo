@@ -49,7 +49,7 @@ RUN if [ "$SITE" = "shop" ]; then \
 COPY ${SITE}/ /opt/demo/site/
 COPY data/${SITE}/ /opt/demo/data/
 COPY shared/mu-plugins/ /opt/demo/mu-plugins/
-COPY docker/demo-entrypoint.sh docker/first-boot.sh /opt/demo/bin/
+COPY docker/demo-entrypoint.sh bin/site-start.sh bin/site-first-boot.sh /opt/demo/bin/
 RUN chmod +x /opt/demo/bin/*.sh
 
 ENTRYPOINT ["/opt/demo/bin/demo-entrypoint.sh"]

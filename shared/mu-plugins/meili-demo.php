@@ -29,3 +29,9 @@ add_action(
 		MeiliDemo\Facets::register();
 	}
 );
+
+// Browsers call the public Meilisearch URL when PHP uses a private one (bin/site-start.sh MEILISEARCH_PUBLIC_HOST).
+add_filter(
+	'meilisearch_autocomplete_host',
+	static fn ( $host ) => defined( 'MEILI_DEMO_PUBLIC_HOST' ) && '' !== MEILI_DEMO_PUBLIC_HOST ? MEILI_DEMO_PUBLIC_HOST : $host
+);

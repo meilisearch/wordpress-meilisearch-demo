@@ -75,7 +75,7 @@ final class Facets {
 				return $m[1];
 			}
 		}
-		$prefix = getenv( 'MEILISEARCH_INDEX_PREFIX' );
+		$prefix = defined( 'MEILI_DEMO_INDEX_PREFIX' ) ? MEILI_DEMO_INDEX_PREFIX : getenv( 'MEILISEARCH_INDEX_PREFIX' );
 		return $prefix ? $prefix . '_content' : null;
 	}
 

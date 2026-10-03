@@ -19,7 +19,7 @@ $phase = getenv( 'DEMO_PHASE' ) ?: 'all';
 [ $shard, $shards ] = array_map( 'intval', explode( '/', getenv( 'DEMO_SHARD' ) ?: '0/1' ) ) + array( 0, 1 );
 $shards             = max( 1, $shards );
 
-$data_dir = '/opt/demo/data';
+$data_dir = getenv( 'DEMO_DATA_DIR' ) ?: '/opt/demo/data';
 $articles = json_decode( (string) file_get_contents( $data_dir . '/articles.json' ), true, 512, JSON_THROW_ON_ERROR );
 $topics   = array(
 	'missions'      => 'Missions',

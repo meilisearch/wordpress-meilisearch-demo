@@ -74,8 +74,11 @@ services:
       DB_USER: wp
       DB_PASSWORD: wp
       MEILISEARCH_HOST: ${MEILISEARCH_HOST:-http://meilisearch.wordpress-meilisearch-demo.orb.local:7700}
-      MEILISEARCH_ADMIN_KEY: ${MEILI_MASTER_KEY:-meili-wp-demo-master-key}
+      MEILISEARCH_ADMIN_KEY: ${MEILISEARCH_ADMIN_KEY:-${MEILI_MASTER_KEY:-meili-wp-demo-master-key}}
       MEILISEARCH_INDEX_PREFIX: blog
+      # Optional, for hosts whose PHP uses a private Meilisearch URL or whose key cannot create keys (see README).
+      MEILISEARCH_PUBLIC_HOST: ${MEILISEARCH_PUBLIC_HOST:-}
+      MEILISEARCH_SEARCH_KEY: ${MEILISEARCH_SEARCH_KEY:-}
     ports:
       - "${BLOG_PORT:-8081}:80"
     volumes:
@@ -120,8 +123,11 @@ services:
       DB_USER: wp
       DB_PASSWORD: wp
       MEILISEARCH_HOST: ${MEILISEARCH_HOST:-http://meilisearch.wordpress-meilisearch-demo.orb.local:7700}
-      MEILISEARCH_ADMIN_KEY: ${MEILI_MASTER_KEY:-meili-wp-demo-master-key}
+      MEILISEARCH_ADMIN_KEY: ${MEILISEARCH_ADMIN_KEY:-${MEILI_MASTER_KEY:-meili-wp-demo-master-key}}
       MEILISEARCH_INDEX_PREFIX: shop
+      # Optional, for hosts whose PHP uses a private Meilisearch URL or whose key cannot create keys (see README).
+      MEILISEARCH_PUBLIC_HOST: ${MEILISEARCH_PUBLIC_HOST:-}
+      MEILISEARCH_SEARCH_KEY: ${MEILISEARCH_SEARCH_KEY:-}
     ports:
       - "${SHOP_PORT:-8082}:80"
     volumes:

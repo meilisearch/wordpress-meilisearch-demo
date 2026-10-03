@@ -1,19 +1,20 @@
 <?php
 namespace MeiliDemo;
 
-/** Block meili-demo/try-chips: example searches from /opt/demo/site/try-chips.json. */
+/** Block meili-demo/try-chips: example searches from the site's try-chips.json. */
 final class TryChips {
 	public static function register(): void {
 		register_block_type( 'meili-demo/try-chips', array( 'render_callback' => array( self::class, 'render' ) ) );
 	}
 
 	public static function render(): string {
-		$file  = '/opt/demo/site/try-chips.json';
+		$file  = ( defined( 'MEILI_DEMO_SITE_DIR' ) ? MEILI_DEMO_SITE_DIR : '/opt/demo/site' ) . '/try-chips.json';
 		$chips = is_readable( $file ) ? json_decode( (string) file_get_contents( $file ), true ) : array();
 		if ( ! is_array( $chips ) || array() === $chips ) {
 			return '';
 		}
-		$extra = 'shop' === getenv( 'SITE' ) ? array( 'post_type' => 'product' ) : array();
+		$site  = defined( 'MEILI_DEMO_SITE' ) ? MEILI_DEMO_SITE : getenv( 'SITE' );
+		$extra = 'shop' === $site ? array( 'post_type' => 'product' ) : array();
 		$items = '';
 		foreach ( $chips as $chip ) {
 			$url    = add_query_arg( array_merge( array( 's' => rawurlencode( (string) $chip['q'] ) ), $extra ), home_url( '/' ) );
