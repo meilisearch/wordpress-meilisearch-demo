@@ -15,7 +15,7 @@ fi
 wp rewrite structure '/%postname%/' --hard
 theme_slug="$(cat "$site_dir/theme/slug.txt")"
 wp theme activate "$theme_slug"
-[ "$SITE" = shop ] && wp plugin activate woocommerce
+if [ "$SITE" = shop ]; then wp plugin activate woocommerce; fi
 wp plugin activate meilisearch
 wp option patch update meilisearch_connection prefix "$MEILISEARCH_INDEX_PREFIX"
 
@@ -33,6 +33,6 @@ for pid in "${pids[@]}"; do
 	wait "$pid"
 done
 
-[ "$(id -u)" = 0 ] && chown -R "${DEMO_WEB_USER:-www-data}:${DEMO_WEB_USER:-www-data}" "$root/wp-content/uploads"
+if [ "$(id -u)" = 0 ]; then chown -R "${DEMO_WEB_USER:-www-data}:${DEMO_WEB_USER:-www-data}" "$root/wp-content/uploads"; fi
 # Connecting and indexing happen on every start (demo-entrypoint.sh), so a Meilisearch problem never blocks
 # the import, and a later start retries the indexing alone.

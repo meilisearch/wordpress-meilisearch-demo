@@ -30,7 +30,7 @@ web_user="${DEMO_WEB_USER:-www-data}"
 bin_dir="$(cd "$(dirname "$0")" && pwd)"
 export DEMO_ROOT="$root" DEMO_SITE_DIR="$site_dir" DEMO_DATA_DIR="$data_dir"
 as_root=0
-[ "$(id -u)" = 0 ] && as_root=1
+if [ "$(id -u)" = 0 ]; then as_root=1; fi
 wp() { if [ "$as_root" = 1 ]; then command wp --path="$root" --allow-root "$@"; else command wp --path="$root" "$@"; fi; }
 log() { echo "[demo] $*"; }
 # PHP string literal for wp-config.php (PHP quotes it, so no shell escaping rules apply).
@@ -50,11 +50,11 @@ fi
 
 mkdir -p "$root/wp-content/plugins" "$root/wp-content/themes" "$root/wp-content/uploads"
 ln -sfn "$plugins_dir/meilisearch" "$root/wp-content/plugins/meilisearch"
-[ -d "$plugins_dir/woocommerce" ] && ln -sfn "$plugins_dir/woocommerce" "$root/wp-content/plugins/woocommerce"
+if [ -d "$plugins_dir/woocommerce" ]; then ln -sfn "$plugins_dir/woocommerce" "$root/wp-content/plugins/woocommerce"; fi
 theme_slug="$(cat "$site_dir/theme/slug.txt" 2>/dev/null || true)"
-[ -n "$theme_slug" ] && ln -sfn "$site_dir/theme" "$root/wp-content/themes/$theme_slug"
+if [ -n "$theme_slug" ]; then ln -sfn "$site_dir/theme" "$root/wp-content/themes/$theme_slug"; fi
 ln -sfn "$mu_dir" "$root/wp-content/mu-plugins"
-[ "$as_root" = 1 ] && chown -R "$web_user:$web_user" "$root/wp-content/uploads"
+if [ "$as_root" = 1 ]; then chown -R "$web_user:$web_user" "$root/wp-content/uploads"; fi
 
 wp config create --force --skip-check \
 	--dbhost="$DB_HOST" --dbname="$DB_NAME" --dbuser="$DB_USER" --dbpass="$DB_PASSWORD" \
@@ -76,11 +76,11 @@ if ( isset( \$_SERVER['HTTP_X_FORWARDED_PROTO'] ) && 'https' === \$_SERVER['HTTP
 PHP
 # It holds the Meilisearch admin key: readable by its owner and the web server's group only.
 chmod 0640 "$root/wp-config.php"
-[ "$as_root" = 1 ] && chgrp "$web_user" "$root/wp-config.php"
+if [ "$as_root" = 1 ]; then chgrp "$web_user" "$root/wp-config.php"; fi
 
 for i in $(seq 1 60); do
 	if mariadb-admin ping -h"$DB_HOST" -u"$DB_USER" -p"$DB_PASSWORD" --silent 2>/dev/null; then break; fi
-	[ "$i" = 60 ] && { log "Database unreachable"; exit 1; }
+	if [ "$i" = 60 ]; then { log "Database unreachable"; exit 1; }; fi
 	sleep 2
 done
 
@@ -118,7 +118,7 @@ else
 fi
 
 expected="content"
-[ "$SITE" = shop ] && expected="content products"
+if [ "$SITE" = shop ]; then expected="content products"; fi
 populated="$(wp option pluck meilisearch_state populated --format=json 2>/dev/null || echo '[]')"
 for logical in $expected; do
 	if ! printf '%s' "$populated" | grep -q "\"$logical\""; then
