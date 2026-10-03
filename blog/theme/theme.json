@@ -1,0 +1,47 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/theme.json",
+	"version": 3,
+	"settings": {
+		"appearanceTools": true,
+		"layout": { "contentSize": "720px", "wideSize": "1240px" },
+		"color": {
+			"defaultPalette": false,
+			"palette": [
+				{ "slug": "night", "color": "#070b18", "name": "Night" },
+				{ "slug": "panel", "color": "#0f1630", "name": "Panel" },
+				{ "slug": "line", "color": "#1c2440", "name": "Line" },
+				{ "slug": "muted", "color": "#8c96b8", "name": "Muted" },
+				{ "slug": "text", "color": "#e6e9f2", "name": "Text" },
+				{ "slug": "flare", "color": "#ff8a5c", "name": "Flare" }
+			]
+		},
+		"typography": {
+			"fontFamilies": [
+				{ "slug": "display", "name": "Space Grotesk", "fontFamily": "\"Space Grotesk\", system-ui, sans-serif",
+				  "fontFace": [
+					{ "fontFamily": "Space Grotesk", "fontWeight": "500", "src": [ "file:./assets/fonts/SpaceGrotesk-500.woff2" ] },
+					{ "fontFamily": "Space Grotesk", "fontWeight": "700", "src": [ "file:./assets/fonts/SpaceGrotesk-700.woff2" ] } ] },
+				{ "slug": "body", "name": "Inter", "fontFamily": "Inter, system-ui, sans-serif",
+				  "fontFace": [
+					{ "fontFamily": "Inter", "fontWeight": "400", "src": [ "file:./assets/fonts/Inter-400.woff2" ] },
+					{ "fontFamily": "Inter", "fontWeight": "500", "src": [ "file:./assets/fonts/Inter-500.woff2" ] },
+					{ "fontFamily": "Inter", "fontWeight": "600", "src": [ "file:./assets/fonts/Inter-600.woff2" ] },
+					{ "fontFamily": "Inter", "fontWeight": "700", "src": [ "file:./assets/fonts/Inter-700.woff2" ] } ] },
+				{ "slug": "mono", "name": "JetBrains Mono", "fontFamily": "\"JetBrains Mono\", ui-monospace, monospace",
+				  "fontFace": [ { "fontFamily": "JetBrains Mono", "fontWeight": "400", "src": [ "file:./assets/fonts/JetBrainsMono-400.woff2" ] } ] }
+			]
+		}
+	},
+	"styles": {
+		"color": { "background": "var(--wp--preset--color--night)", "text": "var(--wp--preset--color--text)" },
+		"typography": { "fontFamily": "var(--wp--preset--font-family--body)", "fontSize": "16px", "lineHeight": "1.6" },
+		"elements": {
+			"heading": { "typography": { "fontFamily": "var(--wp--preset--font-family--display)", "letterSpacing": "-0.02em", "lineHeight": "1.15" } },
+			"link": { "color": { "text": "inherit" }, "typography": { "textDecoration": "none" }, ":hover": { "color": { "text": "var(--wp--preset--color--flare)" } } }
+		}
+	},
+	"templateParts": [
+		{ "name": "header", "title": "Header", "area": "header" },
+		{ "name": "footer", "title": "Footer", "area": "footer" }
+	]
+}

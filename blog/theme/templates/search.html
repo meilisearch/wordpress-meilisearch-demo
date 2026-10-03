@@ -1,0 +1,32 @@
+<!-- wp:template-part {"slug":"header","tagName":"div"} /-->
+<!-- wp:group {"tagName":"main","className":"ml-serp","layout":{"type":"default"}} -->
+<main class="wp-block-group ml-serp">
+	<!-- wp:group {"tagName":"aside","className":"ml-serp__facets"} --><aside class="wp-block-group ml-serp__facets">
+		<!-- wp:meili-demo/facets /-->
+	</aside><!-- /wp:group -->
+	<!-- wp:group {"className":"ml-serp__results"} --><div class="wp-block-group ml-serp__results">
+		<!-- wp:query-title {"type":"search","className":"ml-q"} /-->
+		<!-- wp:meili-demo/try-chips /-->
+		<!-- wp:query {"queryId":3,"query":{"inherit":true}} -->
+		<div class="wp-block-query">
+			<!-- wp:post-template -->
+				<!-- wp:group {"className":"ml-result","layout":{"type":"grid","columnCount":null,"minimumColumnWidth":null}} --><div class="wp-block-group ml-result">
+					<!-- wp:post-featured-image {"isLink":true,"aspectRatio":"4/3","sizeSlug":"medium"} /-->
+					<!-- wp:group --><div class="wp-block-group">
+						<!-- wp:group {"className":"ml-kicker","layout":{"type":"flex"}} --><div class="wp-block-group ml-kicker"><!-- wp:post-terms {"term":"category"} /--><!-- wp:post-date /--></div><!-- /wp:group -->
+						<!-- wp:post-title {"level":3,"isLink":true} /-->
+						<!-- wp:post-excerpt {"excerptLength":40} /-->
+					</div><!-- /wp:group -->
+				</div><!-- /wp:group -->
+			<!-- /wp:post-template -->
+			<!-- wp:query-pagination --><!-- wp:query-pagination-previous /--><!-- wp:query-pagination-numbers /--><!-- wp:query-pagination-next /--><!-- /wp:query-pagination -->
+			<!-- wp:query-no-results --><!-- wp:paragraph --><p>No stories match. Try one of the suggestions above.</p><!-- /wp:paragraph --><!-- /wp:query-no-results -->
+		</div>
+		<!-- /wp:query -->
+	</div><!-- /wp:group -->
+	<!-- wp:group {"tagName":"aside","className":"ml-serp__uth"} --><aside class="wp-block-group ml-serp__uth">
+		<!-- wp:meili-demo/under-the-hood /-->
+	</aside><!-- /wp:group -->
+</main>
+<!-- /wp:group -->
+<!-- wp:template-part {"slug":"footer","tagName":"div"} /-->

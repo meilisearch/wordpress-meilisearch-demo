@@ -1,0 +1,7 @@
+[
+  { "q": "saturn rngs", "why": "Typo tolerance" },
+  { "q": "jupitr moons", "why": "Typo tolerance" },
+  { "q": "\"heat shield\"", "why": "Phrase search" },
+  { "q": "moon -apollo", "why": "Leaving a word out" },
+  { "q": "astronot", "why": "Typo tolerance" }
+]

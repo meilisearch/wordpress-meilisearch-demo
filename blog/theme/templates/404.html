@@ -1,0 +1,19 @@
+<!-- wp:template-part {"slug":"header","tagName":"div"} /-->
+<!-- wp:group {"tagName":"main","className":"ml-archive","layout":{"type":"default"}} -->
+<main class="wp-block-group ml-archive">
+	<!-- wp:heading {"level":1,"className":"ml-q"} --><h1 class="wp-block-heading ml-q">Lost in space</h1><!-- /wp:heading -->
+	<!-- wp:paragraph --><p>This page drifted out of orbit. Try a search:</p><!-- /wp:paragraph -->
+	<!-- wp:search {"label":"Search articles","showLabel":false,"buttonText":"Search","className":"ml-search ml-search--page"} /-->
+	<!-- wp:query {"queryId":6,"query":{"perPage":4,"postType":"post","inherit":false}} -->
+	<div class="wp-block-query">
+		<!-- wp:post-template {"className":"ml-grid","layout":{"type":"grid","columnCount":4}} -->
+			<!-- wp:group {"className":"ml-card"} --><div class="wp-block-group ml-card">
+				<!-- wp:post-featured-image {"isLink":true,"aspectRatio":"4/3","sizeSlug":"medium_large"} /-->
+				<!-- wp:post-title {"level":3,"isLink":true} /-->
+			</div><!-- /wp:group -->
+		<!-- /wp:post-template -->
+	</div>
+	<!-- /wp:query -->
+</main>
+<!-- /wp:group -->
+<!-- wp:template-part {"slug":"footer","tagName":"div"} /-->
