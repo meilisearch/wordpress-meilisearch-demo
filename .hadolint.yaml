@@ -1,0 +1,5 @@
+ignored:
+  # Demo images: Debian packages track the base image's release; pinning exact versions only adds churn.
+  - DL3008
+  # `COPY --from=plugin` refers to a named build context (compose additional_contexts), not a stage.
+  - DL3022

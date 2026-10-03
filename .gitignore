@@ -7,3 +7,5 @@ __pycache__/
 .plugin/
 scripts/.venv/
 scripts/.cache/
+data/*/contact-sheet.html
+plugin/
