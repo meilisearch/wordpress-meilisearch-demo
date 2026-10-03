@@ -73,6 +73,8 @@ class _Sanitizer(HTMLParser):
         for name, value in attrs:
             if name in ("href", "src") and value and _is_safe_url(value):
                 kept.append(f' {name}="{escape(value, quote=True)}"')
+            elif name == "alt" and tag == "img" and value is not None:
+                kept.append(f' alt="{escape(value, quote=True)}"')
         self.out.append(f"<{tag}{''.join(kept)}>")
 
     def handle_startendtag(self, tag, attrs):
@@ -99,6 +101,8 @@ def sanitize_html(html: str, allowed: frozenset[str] = ALLOWED_TAGS) -> str:
     parser.feed(html)
     parser.close()
     out = "".join(parser.out)
+    out = unwrap_block_links(out)
+    out = re.sub(r"<a(?: [^>]*)?>(?:\s|<img>)*</a>", "", out)  # links whose content was all dropped
     out = re.sub(r"<(p|li|h2|h3|figcaption)>\s*</\1>", "", out)
     return re.sub(r"\s+\n|\n\s+", "\n", out).strip()
 
@@ -142,6 +146,14 @@ class _TextCollector(HTMLParser):
     def handle_data(self, data):
         if not self.drop_depth:
             self.out.append(data)
+
+
+_BLOCK_LINK = re.compile(r"<a(?: [^>]*)?>((?:(?!</a>).)*?<(?:h[1-6]|p|ul|ol|li|figure|blockquote)\b(?:(?!</a>).)*)</a>", re.S)
+
+
+def unwrap_block_links(html: str) -> str:
+    """Links can't contain block elements (browsers split them into empty links): keep the content, drop the link."""
+    return _BLOCK_LINK.sub(r"\1", html)
 
 
 def strip_tags(html: str) -> str:

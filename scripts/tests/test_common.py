@@ -97,3 +97,16 @@ def test_save_webp_never_upscales(tmp_path: Path):
 def test_write_json_is_stable(tmp_path: Path):
     common.write_json(tmp_path / "a.json", {"b": 1, "a": "é"})
     assert (tmp_path / "a.json").read_text(encoding="utf-8") == '{\n  "a": "é",\n  "b": 1\n}\n'
+
+
+def test_sanitize_keeps_alt_text():
+    assert common.sanitize_html('<img src="a.jpg" alt="A &quot;nebula&quot;" title="x">') == '<img src="a.jpg" alt="A &quot;nebula&quot;">'
+
+
+def test_sanitize_drops_links_left_empty():
+    assert common.sanitize_html('<p>See <a href="https://x/a.jpg"><img src="javascript:x"></a> and <a href="https://x">this</a></p>') == '<p>See  and <a href="https://x">this</a></p>'
+
+
+def test_sanitize_unwraps_links_around_blocks():
+    html = '<a href="https://science.nasa.gov/earth/data/"><h3>Earth Science Data</h3><p>Open access</p></a><p><a href="https://x">ok</a></p>'
+    assert common.sanitize_html(html) == '<h3>Earth Science Data</h3><p>Open access</p><p><a href="https://x">ok</a></p>'
