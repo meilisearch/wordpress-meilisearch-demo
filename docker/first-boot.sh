@@ -19,13 +19,24 @@ wp plugin activate meilisearch
 wp option patch update meilisearch_connection prefix "$MEILISEARCH_INDEX_PREFIX"
 
 log "Importing content"
-wp eval-file /opt/demo/site/setup.php
+DEMO_PHASE=prepare wp eval-file /opt/demo/site/setup.php
+# The import is sharded across parallel WP-CLI processes (image resizing dominates); each skips items already
+# imported, so a retried first boot resumes. With set -e, a failed shard fails the first boot (no marker).
+shards="${DEMO_IMPORT_PROCESSES:-4}"
+pids=()
+for i in $(seq 0 $((shards - 1))); do
+	DEMO_PHASE=import DEMO_SHARD="$i/$shards" wp eval-file /opt/demo/site/setup.php &
+	pids+=("$!")
+done
+for pid in "${pids[@]}"; do
+	wait "$pid"
+done
 
 log "Connecting to Meilisearch"
 wp meilisearch connect
 log "Reindexing"
 wp meilisearch reindex
-wp option patch update meilisearch_search replace true
-wp option patch update meilisearch_search highlight true
-wp option patch update meilisearch_search autocomplete true
+wp option patch update meilisearch_search replace true --format=json
+wp option patch update meilisearch_search highlight true --format=json
+wp option patch update meilisearch_search autocomplete true --format=json
 chown -R www-data:www-data "$root/wp-content/uploads"

@@ -70,4 +70,5 @@ if ! wp meilisearch check >/dev/null 2>&1; then
 fi
 touch /tmp/demo-ready
 log "Ready"
-exec docker-entrypoint.sh "$@"
+# Everything the official image entrypoint would do (copy core, write wp-config.php) is done above.
+exec "$@"
