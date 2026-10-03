@@ -57,14 +57,36 @@ if [ ! -f "$marker" ]; then
 	touch "$marker"
 fi
 
-# Every start: password, index prefix (a change re-fingerprints the plugin, which then needs a reindex).
+# Every start: admin password, plugin settings, connection, and a reindex when an index is not populated.
+# Meilisearch problems only log warnings: the plugin serves search from MySQL until they are fixed.
 wp user update admin --user_pass="${WP_ADMIN_PASSWORD:-admin}" --skip-email >/dev/null
-current_prefix="$(wp option pluck meilisearch_connection prefix 2>/dev/null || true)"
-if [ "$current_prefix" != "$MEILISEARCH_INDEX_PREFIX" ]; then
-	wp option patch update meilisearch_connection prefix "$MEILISEARCH_INDEX_PREFIX"
-	wp meilisearch connect
-	wp meilisearch reindex
+if [ "$(wp option pluck meilisearch_connection prefix 2>/dev/null || true)" != "$MEILISEARCH_INDEX_PREFIX" ]; then
+	wp option patch update meilisearch_connection prefix "$MEILISEARCH_INDEX_PREFIX" >/dev/null
 fi
+for setting in replace highlight autocomplete; do
+	wp option patch update meilisearch_search "$setting" true --format=json >/dev/null
+done
+
+# connect is idempotent: it checks the version, applies index settings, keeps or creates the browser search
+# key, and (on a host, key or prefix change) marks the indexes unpopulated.
+if connect_output="$(wp meilisearch connect 2>&1)"; then
+	if printf '%s' "$connect_output" | grep -q "managed manually"; then
+		log "WARNING: the Meilisearch key cannot create API keys, so there is no browser search key and autocomplete is OFF. Use a key with the keys.* actions (e.g. the master key)."
+	fi
+else
+	log "Warning: wp meilisearch connect failed; search falls back to MySQL until it succeeds: $(printf '%s' "$connect_output" | tail -1)"
+fi
+
+expected="content"
+[ "$SITE" = shop ] && expected="content products"
+populated="$(wp option pluck meilisearch_state populated --format=json 2>/dev/null || echo '[]')"
+for logical in $expected; do
+	if ! printf '%s' "$populated" | grep -q "\"$logical\""; then
+		log "Reindexing"
+		wp meilisearch reindex || log "Warning: wp meilisearch reindex failed; search falls back to MySQL until a reindex succeeds"
+		break
+	fi
+done
 if ! wp meilisearch check >/dev/null 2>&1; then
 	log "Warning: wp meilisearch check reports a problem; search falls back to MySQL until it is fixed"
 fi

@@ -53,7 +53,15 @@ jobs:
       E2E_MAP_MEILISEARCH: "1"
     steps:
       - uses: actions/checkout@v5
-        with: { persist-credentials: false, lfs: true }
+        with: { persist-credentials: false }
+      # Git LFS images (~550 MB) are cached by the list of LFS object ids, so a run only downloads new images.
+      - run: git lfs ls-files -l | cut -d' ' -f1 | sort > .lfs-ids
+      - uses: actions/cache@v4
+        with:
+          path: .git/lfs
+          key: lfs-${{ hashFiles('.lfs-ids') }}
+          restore-keys: lfs-
+      - run: git lfs pull
       - uses: actions/checkout@v5
         with:
           repository: meilisearch/meilisearch-wordpress
@@ -77,3 +85,19 @@ jobs:
             playwright-report
             test-results
             compose.log
+
+  fly-image:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+        with: { persist-credentials: false }
+      - uses: actions/checkout@v5
+        with:
+          repository: meilisearch/meilisearch-wordpress
+          ref: ${{ inputs.plugin_ref || 'qdequele/demo-support' }}
+          path: plugin
+          persist-credentials: false
+      # Same staging as bin/fly-deploy.sh: the tracked files of the plugin checkout.
+      - run: mkdir .plugin && git -C plugin ls-files -z | (cd plugin && tar --null -T - -cf -) | tar -x -C .plugin
+      - run: docker build --target fly --build-arg SITE=blog --build-arg WORDPRESS_VERSION=7.1.2 --build-arg WOOCOMMERCE_VERSION=11.1.2 -t meili-wp-blog:fly .
+      - run: bin/check-fly-image.sh meili-wp-blog:fly

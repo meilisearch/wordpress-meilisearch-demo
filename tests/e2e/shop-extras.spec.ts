@@ -28,8 +28,15 @@ test( 'checkout never creates an order', async ( { page, request } ) => {
 	await expect( page.locator( '.woocommerce-message, .wc-block-components-notice-banner' ).first() ).toBeVisible();
 	await page.goto( '/checkout/' );
 	await expect( page.getByRole( 'heading', { name: 'Checkout is closed' } ) ).toBeVisible();
-	const api = await request.post( '/wp-json/wc/store/v1/checkout', { data: {} } );
-	expect( api.status() ).toBe( 403 );
+	for ( const path of [ '/wp-json/wc/store/v1/checkout', '/wp-json/wc/store/v1/Checkout', '/?rest_route=/wc/store/v1/CHECKOUT' ] ) {
+		expect( ( await request.post( path, { data: {} } ) ).status(), path ).toBe( 403 );
+	}
+	// The batch route can carry a checkout request too.
+	const batch = await request.post( '/wp-json/wc/store/v1/batch', { data: { requests: [ { method: 'POST', path: '/wc/store/v1/checkout', body: {} } ] } } );
+	expect( batch.status() ).toBe( 403 );
+	// Cart batches (the mini-cart) are not blocked.
+	const cartBatch = await request.post( '/wp-json/wc/store/v1/batch', { data: { requests: [ { method: 'GET', path: '/wc/store/v1/cart', body: {} } ] } } );
+	expect( cartBatch.status() ).not.toBe( 403 );
 	const after = Number( wp( 'shop', 'eval', 'echo count( wc_get_orders( [ "limit" => -1, "status" => array_merge( array_keys( wc_get_order_statuses() ), [ "checkout-draft" ] ), "return" => "ids" ] ) );' ) );
 	expect( after ).toBe( before );
 } );

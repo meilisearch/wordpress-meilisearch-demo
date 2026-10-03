@@ -18,7 +18,8 @@ final class Engine {
 	 */
 	public static function compare(): ?array {
 		global $wp_query;
-		if ( ! $wp_query instanceof \WP_Query || ! $wp_query->is_search() || (int) $wp_query->get( 'paged' ) > 1 ) {
+		// While the circuit breaker is open the plugin answers nothing, so there is no second engine to compare.
+		if ( ! $wp_query instanceof \WP_Query || ! $wp_query->is_search() || (int) $wp_query->get( 'paged' ) > 1 || false !== get_transient( 'meilisearch_circuit_open' ) ) {
 			return null;
 		}
 		$vars = $wp_query->query_vars;

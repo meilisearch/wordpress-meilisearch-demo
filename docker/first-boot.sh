@@ -32,11 +32,6 @@ for pid in "${pids[@]}"; do
 	wait "$pid"
 done
 
-log "Connecting to Meilisearch"
-wp meilisearch connect
-log "Reindexing"
-wp meilisearch reindex
-wp option patch update meilisearch_search replace true --format=json
-wp option patch update meilisearch_search highlight true --format=json
-wp option patch update meilisearch_search autocomplete true --format=json
 chown -R www-data:www-data "$root/wp-content/uploads"
+# Connecting and indexing happen on every start (demo-entrypoint.sh), so a Meilisearch problem never blocks
+# the import, and a later start retries the indexing alone.

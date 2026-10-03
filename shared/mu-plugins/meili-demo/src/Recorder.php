@@ -14,6 +14,7 @@ final class Recorder {
 	private ?float $main_start = null;
 	private ?float $main_ms = null;
 	private bool $paused = false;
+	private ?bool $intercepted = null;
 
 	public static function instance(): Recorder {
 		return self::$instance ??= new Recorder();
@@ -24,6 +25,7 @@ final class Recorder {
 		add_action( 'http_api_debug', array( $this, 'finish' ), 10, 5 );
 		add_action( 'pre_get_posts', array( $this, 'capture_vars' ), PHP_INT_MAX );
 		add_filter( 'the_posts', array( $this, 'stop_main' ), PHP_INT_MAX, 2 );
+		add_filter( 'posts_pre_query', array( $this, 'capture_interception' ), PHP_INT_MAX, 2 );
 	}
 
 	public function pause( callable $fn ): mixed {
@@ -64,7 +66,9 @@ final class Recorder {
 		if ( isset( $decoded['processingTimeMs'] ) && ! isset( $decoded['results'] ) ) {
 			$ms = (int) $decoded['processingTimeMs'];
 		}
+		$error         = is_wp_error( $response ) ? $response->get_error_message() : null;
 		$this->calls[] = array(
+			'error'         => $error,
 			'method'        => strtoupper( (string) ( $args['method'] ?? 'POST' ) ),
 			'path'          => (string) wp_parse_url( $url, PHP_URL_PATH ),
 			'body'          => is_array( $body ) ? $body : null,
@@ -101,6 +105,20 @@ final class Recorder {
 		}
 		return $posts;
 	}
+
+	/**
+	 * Runs after the plugin's posts_pre_query (priority 10): a non-null value means Meilisearch answered the
+	 * main search query; null means WordPress ran its own MySQL query.
+	 */
+	public function capture_interception( mixed $posts, \WP_Query $query ): mixed {
+		if ( ! $this->paused && $query->is_main_query() && $query->is_search() ) {
+			$this->intercepted = null !== $posts;
+		}
+		return $posts;
+	}
+
+	/** Whether Meilisearch answered the main search query (null: not a search page, or not seen). */
+	public function intercepted(): ?bool { return $this->intercepted; }
 
 	public function calls(): array { return $this->calls; }
 	public function query_vars(): array { return $this->vars; }

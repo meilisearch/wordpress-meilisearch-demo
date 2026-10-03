@@ -2,7 +2,7 @@
 
 Two sites that show what the [Meilisearch for WordPress](https://github.com/meilisearch/meilisearch-wordpress) plugin gives a site, out of the box:
 
-- **Mission Log**: a space magazine of 1,000 NASA science articles on plain WordPress.
+- **Mission Log**: a space magazine of 743 NASA science articles on plain WordPress.
 - **Met Prints**: a WooCommerce shop that sells prints of 1,500 public-domain artworks from The Met.
 
 Both use their theme's own search page. The plugin replaces WordPress's MySQL search with Meilisearch, so search tolerates typos and filters, sorting and WooCommerce's filter blocks keep working. Its autocomplete adds suggestions as you type.
@@ -80,7 +80,7 @@ bin/smoke.sh --restart
 ## Data and licences
 
 - **Articles:** [science.nasa.gov](https://science.nasa.gov) through its WordPress REST API. US government works are in the public domain. The demo is not endorsed by NASA and uses no NASA logos. Each article links back to its source. Images credited to third parties are dropped, using `scripts/nasa_third_party.txt`; those articles get a NASA-made fallback image. `scripts/contact_sheet.py` writes a sheet of every kept image for a manual review.
-- **Artworks:** metadata from The Met's [Open Access CSV](https://github.com/metmuseum/openaccess). Images are the Met's CC0 uploads on Wikimedia Commons, found through Wikidata's "Met object ID" (P3634). The Met Collection API is not used, because its bot protection blocks bulk fetching. Prices, variants, sales, stock and reviews are invented and deterministic.
+- **Artworks:** metadata from The Met's [Open Access CSV](https://github.com/metmuseum/openaccess). Images come from Wikimedia Commons, found through Wikidata's "Met object ID" (P3634): mostly the Met's own CC0 uploads, otherwise public-domain photographs of these public-domain 2D works. Review them with the other images before a public deploy. The Met Collection API is not used, because its bot protection blocks bulk fetching. Prices, variants, sales, stock and reviews are invented and deterministic.
 - **Fonts:** Space Grotesk, Inter, JetBrains Mono and Cormorant Garamond, under the SIL Open Font License (`*/theme/assets/fonts/OFL-*.txt`).
 
 Rebuild a snapshot:
@@ -98,7 +98,7 @@ Images are stored with Git LFS.
 
 Each site is one Fly app: WordPress and MariaDB on one machine, with a volume for the database and uploads. Search runs on [Meilisearch Cloud](https://www.meilisearch.com/cloud).
 
-1. Create a Meilisearch Cloud project. Copy its URL and its **Default Admin API Key**. The plugin creates its own search-only key for browsers.
+1. Create a Meilisearch Cloud project. Copy its URL and a key that can also manage API keys (the project's **master key**, or a key with the `keys.create`, `keys.get` and `keys.delete` actions). The plugin uses it to create its own search-only key for browsers; with the Default Admin API Key, which cannot manage keys, autocomplete stays off, and the logs say so.
 2. Create the apps and their volumes:
 
    ```bash

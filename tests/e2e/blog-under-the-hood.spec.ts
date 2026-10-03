@@ -1,4 +1,5 @@
 import { expect, test } from '@playwright/test';
+import { execFileSync } from 'node:child_process';
 import { wp } from './utils';
 
 const panel = ( page ) => page.locator( '.uth' );
@@ -50,6 +51,24 @@ test( 'panel says MySQL when the plugin declines', async ( { page } ) => {
 		await expect( panel( page ) ).toContainText( 'Served by MySQL' );
 		await expect( panel( page ) ).toContainText( 'circuit breaker' );
 	} finally {
+		wp( 'blog', 'transient', 'delete', 'meilisearch_circuit_open' );
+	}
+} );
+
+test( 'panel says MySQL when Meilisearch errors on this very request', async ( { page } ) => {
+	// A temporary mu-plugin makes every Meilisearch search call fail, like a Cloud outage.
+	const file = '/opt/demo/mu-plugins/zz-e2e-meili-down.php';
+	// It reports the failure through http_api_debug exactly as WP_Http does for a real timeout.
+	const code = '<?php add_filter( "pre_http_request", static function ( $pre, $args, $url ) { if ( ! str_contains( $url, "/search" ) || ! str_starts_with( $url, (string) MEILISEARCH_HOST ) ) { return $pre; } $error = new WP_Error( "http_request_failed", "cURL error 28: Operation timed out" ); do_action( "http_api_debug", $error, "response", "WpOrg\\\\Requests\\\\Requests", $args, $url ); return $error; }, 20, 3 );';
+	execFileSync( 'docker', [ 'compose', 'exec', '-T', '-u', 'root', 'blog', 'sh', '-c', `cat > ${ file }` ], { input: code } );
+	try {
+		await page.goto( '/?s=saturn' );
+		await expect( page.locator( '.ml-result' ).first() ).toBeVisible();
+		await expect( panel( page ) ).toContainText( 'Served by MySQL' );
+		await expect( panel( page ) ).toContainText( 'Meilisearch returned an error' );
+		await expect( panel( page ).locator( '.uth__tile--meilisearch' ) ).toHaveCount( 0 );
+	} finally {
+		execFileSync( 'docker', [ 'compose', 'exec', '-T', '-u', 'root', 'blog', 'rm', '-f', file ] );
 		wp( 'blog', 'transient', 'delete', 'meilisearch_circuit_open' );
 	}
 } );

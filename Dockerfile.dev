@@ -20,12 +20,18 @@ RUN npm run build
 FROM wordpress:${WORDPRESS_VERSION}-php8.3-apache AS base
 ARG SITE
 ARG WOOCOMMERCE_VERSION
+SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 ENV SITE=${SITE} DEMO_ROOT=/var/www/html WP_CLI_CACHE_DIR=/tmp/wp-cli-cache WP_CLI_ALLOW_ROOT=1
 RUN apt-get update && apt-get install -y --no-install-recommends less mariadb-client unzip && rm -rf /var/lib/apt/lists/* \
 	&& curl -fsSL -o /usr/local/bin/wp https://github.com/wp-cli/wp-cli/releases/download/v2.12.0/wp-cli-2.12.0.phar \
+	&& echo "be928f6b8ca1e8dfb9d2f4b75a13aa4aee0896f8a9a0a1c45cd5d2c98605e6172e6d014dda2e27f88c98befc16c040cbb2bd1bfa121510ea5cdf5f6a30fe8832  /usr/local/bin/wp" | sha512sum -c - \
 	&& chmod +x /usr/local/bin/wp
 COPY docker/php.ini /usr/local/etc/php/conf.d/zz-demo.ini
 COPY docker/apache-demo.conf /etc/apache2/conf-enabled/zz-demo.conf
+# The base image's vhost sets DocumentRoot /var/www/html, which wins over a server-level DocumentRoot.
+# ${DEMO_ROOT} stays literal on purpose: Apache expands it from the environment at runtime.
+# hadolint ignore=SC2016
+RUN sed -ri 's#/var/www/html#${DEMO_ROOT}#g' /etc/apache2/sites-available/000-default.conf
 
 # Plugin (built), WooCommerce (shop only).
 COPY --from=plugin meilisearch.php uninstall.php readme.txt /opt/plugins/meilisearch/

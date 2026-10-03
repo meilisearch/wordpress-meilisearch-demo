@@ -14,13 +14,15 @@ final class UnderTheHood {
 		$recorder = Recorder::instance();
 		$calls    = $recorder->calls();
 		$compare  = Engine::compare();
-		$mysql    = Engine::is_mysql() || array() === $calls;
+		// Served by Meilisearch only when the plugin actually answered the main query: a failed call is still
+		// recorded, but WordPress then runs MySQL (and the plugin's circuit breaker opens).
+		$mysql    = Engine::is_mysql() || true !== $recorder->intercepted() || array() === $calls;
 		$here     = remove_query_arg( 'engine' );
 
 		ob_start();
 		echo '<details class="uth" open><summary>' . esc_html__( 'Under the hood', 'meili-demo' ) . '</summary>';
 		if ( $mysql ) {
-			echo '<p class="uth__sub"><strong>' . esc_html__( 'Served by MySQL', 'meili-demo' ) . '</strong>: ' . esc_html( self::reason() ) . '</p>';
+			echo '<p class="uth__sub"><strong>' . esc_html__( 'Served by MySQL', 'meili-demo' ) . '</strong>: ' . esc_html( self::reason( $calls ) ) . '</p>';
 		} else {
 			echo '<p class="uth__sub">' . esc_html__( 'What the plugin sent to Meilisearch for this WordPress search', 'meili-demo' ) . '</p>';
 			foreach ( $calls as $call ) {
@@ -71,9 +73,16 @@ final class UnderTheHood {
 		return (string) ob_get_clean();
 	}
 
-	private static function reason(): string {
+	private static function reason( array $calls = array() ): string {
 		if ( Engine::is_mysql() ) {
 			return __( 'you asked for MySQL, so the plugin stepped aside and WordPress ran its own LIKE search.', 'meili-demo' );
+		}
+		foreach ( $calls as $call ) {
+			if ( null !== ( $call['error'] ?? null ) || $call['status'] < 200 || $call['status'] >= 300 ) {
+				$detail = null !== ( $call['error'] ?? null ) ? (string) $call['error'] : sprintf( 'HTTP %d', $call['status'] );
+				/* translators: %s: error message or HTTP status. */
+				return sprintf( __( 'Meilisearch returned an error on this request (%s), so the plugin fell back to MySQL and pauses Meilisearch for a minute.', 'meili-demo' ), $detail );
+			}
 		}
 		if ( false !== get_transient( 'meilisearch_circuit_open' ) ) {
 			return __( 'Meilisearch failed recently, so the circuit breaker sends searches to MySQL for a minute.', 'meili-demo' );

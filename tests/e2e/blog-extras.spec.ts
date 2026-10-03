@@ -47,6 +47,8 @@ test( 'autocomplete shows topic · date subtitles and a See all footer', async (
 test( 'xmlrpc and user enumeration are closed', async ( { request } ) => {
 	const xmlrpc = await request.post( '/xmlrpc.php', { data: '<?xml version="1.0"?><methodCall><methodName>system.listMethods</methodName></methodCall>' } );
 	expect( await xmlrpc.text() ).not.toContain( 'wp.getUsersBlogs' );
-	const users = await request.get( '/wp-json/wp/v2/users' );
-	expect( users.status() ).toBe( 401 );
+	// REST routing is case-insensitive, so the block must be too.
+	for ( const path of [ '/wp-json/wp/v2/users', '/wp-json/wp/v2/Users', '/?rest_route=/wp/v2/USERS', '/wp-json/wp/v2/users/1' ] ) {
+		expect( ( await request.get( path ) ).status(), path ).toBe( 401 );
+	}
 } );

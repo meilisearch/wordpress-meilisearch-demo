@@ -15,6 +15,8 @@ primary_region = "cdg"
   WP_ENVIRONMENT_TYPE = "production"
   DB_USER = "wp"
   DB_HOST = "127.0.0.1"
+  # One shared-cpu-2x machine also runs MariaDB: two import processes on first boot.
+  DEMO_IMPORT_PROCESSES = "2"
 
 [[mounts]]
   source = "data"
@@ -29,7 +31,7 @@ primary_region = "cdg"
   min_machines_running = 0
 
   [[http_service.checks]]
-    grace_period = "900s"
+    grace_period = "1800s"
     interval = "30s"
     method = "GET"
     path = "/wp-login.php"
