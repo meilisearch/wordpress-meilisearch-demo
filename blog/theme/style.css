@@ -1,0 +1,145 @@
+/*
+Theme Name: Mission Log
+Description: Space magazine theme for the Meilisearch for WordPress demo.
+Version: 1.0.0
+Requires at least: 6.9
+Requires PHP: 8.1
+License: GPL-2.0-or-later
+Text Domain: mission-log
+*/
+
+:root {
+	--ml-night: var(--wp--preset--color--night, #070b18);
+	--ml-panel: var(--wp--preset--color--panel, #0f1630);
+	--ml-line: var(--wp--preset--color--line, #1c2440);
+	--ml-edge: #2b3766;
+	--ml-muted: var(--wp--preset--color--muted, #8c96b8);
+	--ml-text: var(--wp--preset--color--text, #e6e9f2);
+	--ml-flare: var(--wp--preset--color--flare, #ff8a5c);
+	--ml-gutter: clamp(16px, 4vw, 40px);
+}
+
+body { margin: 0; overflow-x: hidden; }
+.wp-site-blocks { padding: 0; }
+.wp-site-blocks > * + * { margin-block-start: 0; }
+img { max-width: 100%; height: auto; }
+
+/* Header */
+.ml-header { gap: 32px; padding: 18px var(--ml-gutter); border-bottom: 1px solid var(--ml-line); align-items: center; }
+.ml-logo { margin: 0; font-family: var(--wp--preset--font-family--display); font-weight: 700; font-size: 22px; letter-spacing: -0.02em; white-space: nowrap; }
+.ml-logo a { display: inline-flex; align-items: center; gap: 10px; color: var(--ml-text); }
+.ml-logo a::before {
+	content: ""; width: 26px; height: 26px; border-radius: 50%; flex: none;
+	background: radial-gradient(circle at 35% 35%, #ffd27a, #ff6a3d 60%, #5b1d0e);
+	box-shadow: 0 0 18px rgba(255, 106, 61, 0.6);
+}
+.ml-topics ul { display: flex; flex-wrap: wrap; gap: 6px 22px; list-style: none; margin: 0; padding: 0; font-size: 14px; }
+.ml-topics a { color: #a9b1cc; }
+.ml-topics a:hover, .ml-topics a:focus-visible { color: var(--ml-flare); }
+.ml-search { margin-left: auto; width: min(340px, 100%); position: relative; }
+.ml-search .wp-block-search__inside-wrapper { border: 0; padding: 0; }
+.ml-search .wp-block-search__input {
+	width: 100%; background: var(--ml-panel); border: 1px solid var(--ml-edge); color: #fff;
+	padding: 10px 14px; border-radius: 10px; font: inherit; font-size: 14px;
+}
+.ml-search .wp-block-search__input::placeholder { color: #7d89b6; }
+.ml-search .wp-block-search__input:focus { outline: 2px solid var(--ml-flare); outline-offset: 1px; }
+.ml-search--page { margin: 0 0 28px; }
+
+/* Plugin autocomplete, restyled (the plugin positions it under the input) */
+.meilisearch-ac {
+	background: var(--ml-panel); border: 1px solid var(--ml-edge); border-radius: 12px; color: var(--ml-text);
+	padding: 8px; box-shadow: 0 18px 40px rgba(0, 0, 0, 0.5); z-index: 50; min-width: 340px;
+}
+.meilisearch-ac__group-label { margin: 6px 8px; font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: #7d89b6; }
+.meilisearch-ac__option { display: flex; gap: 10px; align-items: center; padding: 7px 8px; border-radius: 8px; font-size: 13.5px; cursor: pointer; }
+.meilisearch-ac__option.is-active, .meilisearch-ac__option:hover { background: #1b2650; }
+.meilisearch-ac__thumb { width: 40px; height: 40px; object-fit: cover; border-radius: 6px; flex: none; }
+.meilisearch-ac__subtitle { color: #7d89b6; font-size: 11.5px; opacity: 1; }
+.meilisearch-ac__footer { border-top: 1px solid #22305c; margin-top: 6px; padding: 8px 8px 2px; font-size: 12px; color: #7d89b6; cursor: pointer; }
+.meilisearch-ac__footer.is-active { color: var(--ml-text); }
+.meilisearch-ac mark, .ml-result mark { background: none; color: #fff; font-weight: 700; box-shadow: inset 0 -0.45em 0 rgba(255, 138, 92, 0.45); }
+
+/* Shared bits */
+.ml-kicker, .ml-kicker a { color: var(--ml-flare); font-size: 12px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; }
+.ml-kicker { gap: 8px; margin: 0; }
+.ml-kicker .wp-block-post-date { color: var(--ml-muted); letter-spacing: 0.04em; }
+.ml-meta, .ml-meta a { color: var(--ml-muted); font-size: 13px; gap: 12px; }
+.ml-section-h { padding: 30px var(--ml-gutter) 0; margin: 0; font-size: 22px; }
+
+/* Home hero */
+.ml-hero .wp-block-post-template { margin: 0; padding: 0; list-style: none; }
+.ml-hero .wp-block-post-template > li { display: grid; grid-template-columns: 1.4fr 1fr; min-height: 420px; margin: 0; }
+.ml-hero__img { margin: 0; height: 100%; }
+.ml-hero__img a, .ml-hero__img img { display: block; width: 100%; height: 100%; min-height: 420px; object-fit: cover; }
+.ml-hero__txt { padding: 48px 44px; display: flex; flex-direction: column; justify-content: center; background: linear-gradient(135deg, #0b1229, var(--ml-night)); }
+.ml-hero__txt h1 { font-size: clamp(28px, 3.2vw, 40px); margin: 12px 0; }
+.ml-hero__txt .wp-block-post-excerpt { color: #aab2cf; font-size: 15px; line-height: 1.6; }
+
+/* Card grid */
+.ml-grid { gap: 22px; padding: 34px var(--ml-gutter) 40px; }
+.ml-single .ml-grid { padding-inline: 0; }
+.ml-card .wp-block-post-featured-image { margin: 0 0 12px; }
+.ml-card .wp-block-post-featured-image img { border-radius: 10px; }
+.ml-card h3 { font-size: 17px; margin: 6px 0; line-height: 1.25; }
+
+/* Search results: facets | results | under the hood */
+.ml-serp { display: grid; grid-template-columns: 220px minmax(0, 1fr) 330px; gap: 32px; padding: 30px var(--ml-gutter) 44px; align-items: start; }
+.ml-archive { padding: 30px var(--ml-gutter) 44px; max-width: 980px; }
+.ml-q { font-size: 28px; margin: 0 0 6px; }
+.ml-result { display: grid; grid-template-columns: 150px minmax(0, 1fr); gap: 18px; padding: 18px 0; border-top: 1px solid #1a2341; }
+.ml-result .wp-block-post-featured-image { margin: 0; }
+.ml-result .wp-block-post-featured-image img { border-radius: 8px; }
+.ml-result h3 { margin: 4px 0 6px; font-size: 19px; }
+.ml-result .wp-block-post-excerpt { margin: 0; color: #aab2cf; font-size: 14px; line-height: 1.55; }
+.ml-result .wp-block-post-excerpt__excerpt { margin: 0; }
+.ml-serp .wp-block-query-pagination, .ml-archive .wp-block-query-pagination { margin-top: 24px; gap: 12px; color: var(--ml-muted); }
+
+/* Demo facets (block from the demo mu-plugin) */
+.demo-facets__h { font-family: var(--wp--preset--font-family--body); font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: #7d89b6; margin: 0 0 10px; }
+.demo-facets ul { list-style: none; margin: 0 0 26px; padding: 0; }
+.demo-facets a { display: flex; justify-content: space-between; gap: 8px; font-size: 13.5px; padding: 5px 0; color: #c5cbe0; }
+.demo-facets a b { color: #8a93b5; font-weight: 500; }
+.demo-facets a[aria-current] { color: #fff; }
+.demo-facets a[aria-current] span::before { content: "● "; color: var(--ml-flare); }
+.demo-facets__note { font-size: 11.5px; color: #8a93b5; line-height: 1.5; }
+
+/* Single article */
+.ml-single { padding: 40px var(--ml-gutter) 20px; }
+.ml-single h1 { font-size: clamp(30px, 4vw, 44px); margin: 10px 0 12px; }
+.ml-single .wp-block-post-featured-image img { border-radius: 12px; }
+.ml-single .wp-block-post-content { font-size: 17px; line-height: 1.7; color: #d3d8ea; }
+.ml-single .wp-block-post-content a { color: var(--ml-flare); text-decoration: underline; }
+.ml-single .wp-block-post-content figure { margin: 28px 0; }
+.ml-single .wp-block-post-content figcaption { color: var(--ml-muted); font-size: 13px; }
+.ml-single .demo-source { color: var(--ml-muted); font-size: 14px; border-top: 1px solid var(--ml-line); padding-top: 14px; }
+.ml-tags, .ml-tags a { color: var(--ml-muted); font-size: 13px; }
+
+/* Footer */
+.ml-footer { padding: 22px var(--ml-gutter); border-top: 1px solid var(--ml-line); color: #8a93b5; font-size: 12px; flex-wrap: wrap; gap: 8px 24px; }
+.ml-footer p { margin: 0; }
+.ml-footer a { color: #a9b1cc; text-decoration: underline; }
+
+/* Narrow screens */
+@media (max-width: 1100px) {
+	.ml-serp { grid-template-columns: 200px minmax(0, 1fr); }
+	.ml-serp__uth { grid-column: 1 / -1; }
+}
+@media (max-width: 900px) {
+	.ml-header { flex-wrap: wrap; gap: 14px; }
+	.ml-search { margin-left: 0; width: 100%; }
+	.ml-hero .wp-block-post-template > li { grid-template-columns: 1fr; }
+	.ml-hero__img a, .ml-hero__img img { min-height: 240px; }
+	.ml-hero__txt { padding: 28px var(--ml-gutter); }
+	.ml-grid { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; }
+	.ml-serp { grid-template-columns: minmax(0, 1fr); }
+	.ml-serp__facets { order: 2; }
+	.ml-serp__results { order: 1; }
+	.ml-serp__uth { order: 3; }
+}
+@media (max-width: 520px) {
+	.ml-grid { grid-template-columns: minmax(0, 1fr) !important; }
+	.ml-result { grid-template-columns: 96px minmax(0, 1fr); gap: 12px; }
+	.ml-result h3 { font-size: 16px; }
+}
+@media (prefers-reduced-motion: reduce) { * { scroll-behavior: auto !important; } }

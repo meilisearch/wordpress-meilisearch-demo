@@ -1,0 +1,46 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/theme.json",
+	"version": 3,
+	"settings": {
+		"appearanceTools": true,
+		"layout": { "contentSize": "760px", "wideSize": "1240px" },
+		"color": {
+			"defaultPalette": false,
+			"palette": [
+				{ "slug": "paper", "color": "#f7f4ee", "name": "Paper" },
+				{ "slug": "card", "color": "#fbf9f4", "name": "Card" },
+				{ "slug": "ink", "color": "#1d1a16", "name": "Ink" },
+				{ "slug": "muted", "color": "#6d6455", "name": "Muted" },
+				{ "slug": "rule", "color": "#e3dccd", "name": "Rule" },
+				{ "slug": "crimson", "color": "#a3242c", "name": "Crimson" }
+			]
+		},
+		"typography": {
+			"fontFamilies": [
+				{ "slug": "display", "name": "Cormorant Garamond", "fontFamily": "\"Cormorant Garamond\", Georgia, serif",
+				  "fontFace": [
+					{ "fontFamily": "Cormorant Garamond", "fontWeight": "500", "fontStyle": "normal", "src": [ "file:./assets/fonts/CormorantGaramond-500.woff2" ] },
+					{ "fontFamily": "Cormorant Garamond", "fontWeight": "500", "fontStyle": "italic", "src": [ "file:./assets/fonts/CormorantGaramond-500-italic.woff2" ] },
+					{ "fontFamily": "Cormorant Garamond", "fontWeight": "600", "fontStyle": "normal", "src": [ "file:./assets/fonts/CormorantGaramond-600.woff2" ] } ] },
+				{ "slug": "body", "name": "Inter", "fontFamily": "Inter, system-ui, sans-serif",
+				  "fontFace": [
+					{ "fontFamily": "Inter", "fontWeight": "400", "src": [ "file:./assets/fonts/Inter-400.woff2" ] },
+					{ "fontFamily": "Inter", "fontWeight": "500", "src": [ "file:./assets/fonts/Inter-500.woff2" ] },
+					{ "fontFamily": "Inter", "fontWeight": "600", "src": [ "file:./assets/fonts/Inter-600.woff2" ] } ] }
+			]
+		}
+	},
+	"styles": {
+		"color": { "background": "var(--wp--preset--color--paper)", "text": "var(--wp--preset--color--ink)" },
+		"typography": { "fontFamily": "var(--wp--preset--font-family--body)", "fontSize": "15px", "lineHeight": "1.6" },
+		"elements": {
+			"heading": { "typography": { "fontFamily": "var(--wp--preset--font-family--display)", "fontWeight": "500", "lineHeight": "1.1" } },
+			"link": { "color": { "text": "inherit" }, "typography": { "textDecoration": "none" }, ":hover": { "color": { "text": "var(--wp--preset--color--crimson)" } } },
+			"button": { "color": { "background": "var(--wp--preset--color--ink)", "text": "var(--wp--preset--color--paper)" }, "border": { "radius": "0" } }
+		}
+	},
+	"templateParts": [
+		{ "name": "header", "title": "Header", "area": "header" },
+		{ "name": "footer", "title": "Footer", "area": "footer" }
+	]
+}

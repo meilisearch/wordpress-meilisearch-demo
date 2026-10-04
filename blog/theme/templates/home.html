@@ -1,0 +1,34 @@
+<!-- wp:template-part {"slug":"header","tagName":"div"} /-->
+<!-- wp:group {"tagName":"main","layout":{"type":"default"}} -->
+<main class="wp-block-group">
+	<!-- wp:query {"queryId":1,"query":{"perPage":1,"postType":"post","sticky":"only","inherit":false},"className":"ml-hero"} -->
+	<div class="wp-block-query ml-hero">
+		<!-- wp:post-template -->
+			<!-- wp:post-featured-image {"isLink":true,"sizeSlug":"large","className":"ml-hero__img"} /-->
+			<!-- wp:group {"className":"ml-hero__txt"} --><div class="wp-block-group ml-hero__txt">
+				<!-- wp:post-terms {"term":"category","className":"ml-kicker"} /-->
+				<!-- wp:post-title {"level":1,"isLink":true} /-->
+				<!-- wp:post-excerpt {"excerptLength":40} /-->
+				<!-- wp:group {"className":"ml-meta","layout":{"type":"flex"}} --><div class="wp-block-group ml-meta">
+					<!-- wp:post-author-name /--><!-- wp:post-date /-->
+				</div><!-- /wp:group -->
+			</div><!-- /wp:group -->
+		<!-- /wp:post-template -->
+	</div>
+	<!-- /wp:query -->
+	<!-- wp:heading {"className":"ml-section-h"} --><h2 class="wp-block-heading ml-section-h">Latest from the archive</h2><!-- /wp:heading -->
+	<!-- wp:query {"queryId":2,"query":{"perPage":8,"postType":"post","sticky":"exclude","inherit":false}} -->
+	<div class="wp-block-query">
+		<!-- wp:post-template {"className":"ml-grid","layout":{"type":"grid","columnCount":4}} -->
+			<!-- wp:group {"className":"ml-card"} --><div class="wp-block-group ml-card">
+				<!-- wp:post-featured-image {"isLink":true,"aspectRatio":"4/3","sizeSlug":"medium_large"} /-->
+				<!-- wp:post-terms {"term":"category","className":"ml-kicker"} /-->
+				<!-- wp:post-title {"level":3,"isLink":true} /-->
+				<!-- wp:post-date {"className":"ml-meta"} /-->
+			</div><!-- /wp:group -->
+		<!-- /wp:post-template -->
+	</div>
+	<!-- /wp:query -->
+</main>
+<!-- /wp:group -->
+<!-- wp:template-part {"slug":"footer","tagName":"div"} /-->

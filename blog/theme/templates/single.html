@@ -1,0 +1,24 @@
+<!-- wp:template-part {"slug":"header","tagName":"div"} /-->
+<!-- wp:group {"tagName":"main","className":"ml-single","layout":{"type":"constrained","contentSize":"720px"}} -->
+<main class="wp-block-group ml-single">
+	<!-- wp:post-terms {"term":"category","className":"ml-kicker"} /-->
+	<!-- wp:post-title {"level":1} /-->
+	<!-- wp:group {"className":"ml-meta","layout":{"type":"flex"}} --><div class="wp-block-group ml-meta"><!-- wp:post-author-name /--><!-- wp:post-date /--></div><!-- /wp:group -->
+	<!-- wp:post-featured-image {"sizeSlug":"large","align":"wide"} /-->
+	<!-- wp:post-content {"layout":{"type":"constrained"}} /-->
+	<!-- wp:post-terms {"term":"post_tag","className":"ml-tags"} /-->
+	<!-- wp:heading {"className":"ml-section-h"} --><h2 class="wp-block-heading ml-section-h">Latest stories</h2><!-- /wp:heading -->
+	<!-- wp:query {"queryId":5,"query":{"perPage":3,"postType":"post","inherit":false},"align":"wide"} -->
+	<div class="wp-block-query alignwide">
+		<!-- wp:post-template {"className":"ml-grid ml-grid--3","layout":{"type":"grid","columnCount":3}} -->
+			<!-- wp:group {"className":"ml-card"} --><div class="wp-block-group ml-card">
+				<!-- wp:post-featured-image {"isLink":true,"aspectRatio":"4/3","sizeSlug":"medium_large"} /-->
+				<!-- wp:post-title {"level":3,"isLink":true} /-->
+				<!-- wp:post-date {"className":"ml-meta"} /-->
+			</div><!-- /wp:group -->
+		<!-- /wp:post-template -->
+	</div>
+	<!-- /wp:query -->
+</main>
+<!-- /wp:group -->
+<!-- wp:template-part {"slug":"footer","tagName":"div"} /-->

@@ -4,3 +4,8 @@ node_modules/
 test-results/
 playwright-report/
 __pycache__/
+.plugin/
+scripts/.venv/
+scripts/.cache/
+data/*/contact-sheet.html
+plugin/

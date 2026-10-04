@@ -1,0 +1,103 @@
+name: CI
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+    inputs:
+      plugin_ref:
+        description: meilisearch-wordpress ref to build the demo against
+        default: main
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  scripts:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+        with: { persist-credentials: false }
+      - uses: actions/setup-python@v6
+        with: { python-version: "3.12" }
+      - run: pip install -r scripts/requirements.txt
+      - run: cd scripts && pytest -q
+
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+        with: { persist-credentials: false }
+      - run: shellcheck docker/*.sh bin/*.sh
+      - uses: hadolint/hadolint-action@v3.1.0
+        with: { dockerfile: Dockerfile }
+      - uses: hadolint/hadolint-action@v3.1.0
+        with: { dockerfile: Dockerfile.dev }
+      - run: docker run --rm -v "$PWD":/app -w /app php:8.3-cli sh -c 'for f in $(find shared blog shop -name "*.php"); do php -l "$f" || exit 1; done && php tests/php/run.php'
+
+  e2e:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    env:
+      MEILISEARCH_PLUGIN_PATH: ./plugin
+      MEILISEARCH_HOST: http://meilisearch:7700
+      MEILISEARCH_PORT: "7700"
+      BLOG_HOME: http://localhost:8081
+      SHOP_HOME: http://localhost:8082
+      BLOG_URL: http://localhost:8081
+      SHOP_URL: http://localhost:8082
+      E2E_MAP_MEILISEARCH: "1"
+    steps:
+      - uses: actions/checkout@v5
+        with: { persist-credentials: false }
+      # Git LFS images (~550 MB) are cached by the list of LFS object ids, so a run only downloads new images.
+      - run: git lfs ls-files -l | cut -d' ' -f1 | sort > .lfs-ids
+      - uses: actions/cache@v4
+        with:
+          path: .git/lfs
+          key: lfs-${{ hashFiles('.lfs-ids') }}
+          restore-keys: lfs-
+      - run: git lfs pull
+      - uses: actions/checkout@v5
+        with:
+          repository: meilisearch/meilisearch-wordpress
+          ref: ${{ inputs.plugin_ref || 'main' }}
+          path: plugin
+          persist-credentials: false
+      - run: cp .env.example .env
+      - run: docker compose up --build --wait --wait-timeout 1500
+      - run: bin/smoke.sh --restart
+      - uses: actions/setup-node@v5
+        with: { node-version: 22, cache: npm }
+      - run: npm ci && npx playwright install --with-deps chromium
+      - run: npm run test:e2e
+      - if: failure()
+        run: docker compose logs --no-color > compose.log
+      - if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: e2e-debug
+          path: |
+            playwright-report
+            test-results
+            compose.log
+
+  fly-image:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+        with: { persist-credentials: false }
+      - uses: actions/checkout@v5
+        with:
+          repository: meilisearch/meilisearch-wordpress
+          ref: ${{ inputs.plugin_ref || 'main' }}
+          path: plugin
+          persist-credentials: false
+      # Same staging as bin/fly-deploy.sh: the tracked files of the plugin checkout.
+      - run: mkdir .plugin && git -C plugin ls-files -z | (cd plugin && tar --null -T - -cf -) | tar -x -C .plugin
+      - run: docker build --target fly --build-arg SITE=blog --build-arg WORDPRESS_VERSION=7.1.2 --build-arg WOOCOMMERCE_VERSION=11.1.2 -t meili-wp-blog:fly .
+      - run: bin/check-fly-image.sh meili-wp-blog:fly

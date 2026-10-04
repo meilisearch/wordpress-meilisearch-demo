@@ -1,0 +1,68 @@
+<!-- wp:template-part {"slug":"header","tagName":"div"} /-->
+<!-- wp:group {"tagName":"main","className":"mp-serp mp-serp--archive","layout":{"type":"default"}} -->
+<main class="wp-block-group mp-serp mp-serp--archive">
+	<!-- wp:woocommerce/product-filters {"className":"mp-filters"} -->
+	<div class="wp-block-woocommerce-product-filters mp-filters">
+		<!-- wp:woocommerce/product-filter-active -->
+		<div class="wp-block-woocommerce-product-filter-active">
+			<!-- wp:woocommerce/product-filter-removable-chips /-->
+			<!-- wp:woocommerce/product-filter-clear-button /-->
+		</div>
+		<!-- /wp:woocommerce/product-filter-active -->
+		<!-- wp:woocommerce/product-filter-attribute {"attributeId":1,"queryType":"or","showCounts":true} -->
+		<div class="wp-block-woocommerce-product-filter-attribute">
+			<!-- wp:heading {"level":3,"className":"mp-filter-h"} --><h3 class="wp-block-heading mp-filter-h">Department</h3><!-- /wp:heading -->
+			<!-- wp:woocommerce/product-filter-checkbox-list {"lock":{"remove":true}} --><div class="wp-block-woocommerce-product-filter-checkbox-list wc-block-product-filter-checkbox-list"></div><!-- /wp:woocommerce/product-filter-checkbox-list -->
+		</div>
+		<!-- /wp:woocommerce/product-filter-attribute -->
+		<!-- wp:woocommerce/product-filter-attribute {"attributeId":3,"queryType":"or","showCounts":true} -->
+		<div class="wp-block-woocommerce-product-filter-attribute">
+			<!-- wp:heading {"level":3,"className":"mp-filter-h"} --><h3 class="wp-block-heading mp-filter-h">Century</h3><!-- /wp:heading -->
+			<!-- wp:woocommerce/product-filter-checkbox-list {"lock":{"remove":true}} --><div class="wp-block-woocommerce-product-filter-checkbox-list wc-block-product-filter-checkbox-list"></div><!-- /wp:woocommerce/product-filter-checkbox-list -->
+		</div>
+		<!-- /wp:woocommerce/product-filter-attribute -->
+		<!-- wp:woocommerce/product-filter-attribute {"attributeId":4,"queryType":"or","showCounts":true} -->
+		<div class="wp-block-woocommerce-product-filter-attribute">
+			<!-- wp:heading {"level":3,"className":"mp-filter-h"} --><h3 class="wp-block-heading mp-filter-h">Medium</h3><!-- /wp:heading -->
+			<!-- wp:woocommerce/product-filter-checkbox-list {"lock":{"remove":true}} --><div class="wp-block-woocommerce-product-filter-checkbox-list wc-block-product-filter-checkbox-list"></div><!-- /wp:woocommerce/product-filter-checkbox-list -->
+		</div>
+		<!-- /wp:woocommerce/product-filter-attribute -->
+		<!-- wp:woocommerce/product-filter-price -->
+		<div class="wp-block-woocommerce-product-filter-price">
+			<!-- wp:heading {"level":3,"className":"mp-filter-h"} --><h3 class="wp-block-heading mp-filter-h">Price</h3><!-- /wp:heading -->
+			<!-- wp:woocommerce/product-filter-price-slider /-->
+		</div>
+		<!-- /wp:woocommerce/product-filter-price -->
+		<!-- wp:woocommerce/product-filter-rating {"showCounts":true} -->
+		<div class="wp-block-woocommerce-product-filter-rating">
+			<!-- wp:heading {"level":3,"className":"mp-filter-h"} --><h3 class="wp-block-heading mp-filter-h">Rating</h3><!-- /wp:heading -->
+			<!-- wp:woocommerce/product-filter-checkbox-list {"lock":{"remove":true}} --><div class="wp-block-woocommerce-product-filter-checkbox-list wc-block-product-filter-checkbox-list"></div><!-- /wp:woocommerce/product-filter-checkbox-list -->
+		</div>
+		<!-- /wp:woocommerce/product-filter-rating -->
+	</div>
+	<!-- /wp:woocommerce/product-filters -->
+	<!-- wp:group {"className":"mp-serp__results"} --><div class="wp-block-group mp-serp__results">
+		<!-- wp:query-title {"type":"archive","showPrefix":false,"className":"mp-q"} /-->
+		<!-- wp:term-description /-->
+		<!-- wp:group {"className":"mp-tools","layout":{"type":"flex","justifyContent":"space-between"}} --><div class="wp-block-group mp-tools">
+			<!-- wp:woocommerce/product-results-count /-->
+			<!-- wp:woocommerce/catalog-sorting /-->
+		</div><!-- /wp:group -->
+		<!-- wp:woocommerce/product-collection {"queryId":10,"query":{"inherit":true,"perPage":12},"displayLayout":{"type":"flex","columns":3}} -->
+		<div class="wp-block-woocommerce-product-collection">
+			<!-- wp:woocommerce/product-template -->
+				<!-- wp:group {"className":"mp-card"} --><div class="wp-block-group mp-card">
+					<!-- wp:woocommerce/product-image {"isDescendentOfQueryLoop":true,"aspectRatio":"4/5","scale":"contain"} /-->
+					<!-- wp:post-title {"level":3,"isLink":true,"__woocommerceNamespace":"woocommerce/product-collection/product-title"} /-->
+					<!-- wp:post-excerpt {"excerptLength":10,"className":"mp-by"} /-->
+					<!-- wp:woocommerce/product-price {"isDescendentOfQueryLoop":true} /-->
+				</div><!-- /wp:group -->
+			<!-- /wp:woocommerce/product-template -->
+			<!-- wp:query-pagination --><!-- wp:query-pagination-previous /--><!-- wp:query-pagination-numbers /--><!-- wp:query-pagination-next /--><!-- /wp:query-pagination -->
+			<!-- wp:woocommerce/product-collection-no-results --><!-- wp:paragraph --><p>No prints match. Try one of the suggestions above.</p><!-- /wp:paragraph --><!-- /wp:woocommerce/product-collection-no-results -->
+		</div>
+		<!-- /wp:woocommerce/product-collection -->
+	</div><!-- /wp:group -->
+</main>
+<!-- /wp:group -->
+<!-- wp:template-part {"slug":"footer","tagName":"div"} /-->
