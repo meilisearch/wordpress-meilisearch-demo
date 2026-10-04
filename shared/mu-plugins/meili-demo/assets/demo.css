@@ -1,6 +1,17 @@
 .uth { --uth-bg: #0c1330; --uth-line: #2b3766; --uth-code-bg: #070b18; --uth-code: #cfd6f3; --uth-muted: #7d89b6; --uth-accent: #ff8a5c; --uth-accent-ink: #1a0c05;
-	background: var(--uth-bg); border: 1px solid var(--uth-line); border-radius: 12px; padding: 16px; font-size: 12.5px; position: sticky; top: 24px; }
-.uth summary { font-weight: 600; font-size: 14px; cursor: pointer; }
+	background: var(--uth-bg); border-left: 1px solid var(--uth-line); padding: 18px; font-size: 12.5px;
+	position: fixed; z-index: 100000; top: 0; right: 0; bottom: 0; width: min(420px, 100vw); box-sizing: border-box; overflow-y: auto;
+	box-shadow: -12px 0 40px rgb(0 0 0 / 0.25); }
+.uth[hidden] { display: none; }
+.admin-bar .uth { top: var(--wp-admin--admin-bar--height, 32px); }
+.uth__head { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.uth__head h2 { margin: 0; font-size: 15px; font-weight: 600; font-family: inherit; }
+.uth__close { border: 1px solid var(--uth-line); background: transparent; color: inherit; border-radius: 8px; width: 30px; height: 30px; font-size: 18px; line-height: 1; cursor: pointer; }
+
+/* The (i) button in the site header that opens the panel */
+.demo-info { flex: none; display: inline-grid; place-items: center; width: 36px; height: 36px; padding: 0; border-radius: 50%; cursor: pointer;
+	border: 1px solid color-mix(in srgb, currentColor 35%, transparent); background: transparent; color: inherit; }
+.demo-info:hover, .demo-info:focus-visible, .demo-info[aria-expanded="true"] { border-color: currentColor; }
 .uth__sub, .uth__source { color: var(--uth-muted); margin: 6px 0 12px; }
 .uth__req { margin: 0 0 8px; font-family: var(--wp--preset--font-family--mono, ui-monospace, monospace); font-size: 11.5px; line-height: 1.55;
 	white-space: pre-wrap; word-break: break-word; color: var(--uth-code); background: var(--uth-code-bg); border-radius: 8px; padding: 12px; }

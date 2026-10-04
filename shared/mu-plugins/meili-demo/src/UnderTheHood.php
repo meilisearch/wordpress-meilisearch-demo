@@ -1,10 +1,31 @@
 <?php
 namespace MeiliDemo;
 
-/** Block meili-demo/under-the-hood: the request the plugin sent for this page, where it came from, both engines. */
+/**
+ * Block meili-demo/under-the-hood: the request the plugin sent for this page, where it came from, both engines.
+ * It renders as a hidden drawer; block meili-demo/info-button, in the site header, opens it (assets/demo.js).
+ */
 final class UnderTheHood {
+	public const ID = 'meili-demo-uth';
+
 	public static function register(): void {
 		register_block_type( 'meili-demo/under-the-hood', array( 'render_callback' => array( self::class, 'render' ) ) );
+		register_block_type( 'meili-demo/info-button', array( 'render_callback' => array( self::class, 'button' ) ) );
+	}
+
+	/** The (i) toggle, only on search pages, where the drawer exists. */
+	public static function button(): string {
+		if ( ! is_search() ) {
+			return '';
+		}
+		$label = esc_attr__( 'Under the hood', 'meili-demo' );
+		return sprintf(
+			'<button type="button" class="demo-info" aria-controls="%1$s" aria-expanded="false" aria-label="%2$s" title="%2$s">'
+			. '<svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">'
+			. '<circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg></button>',
+			self::ID,
+			$label
+		);
 	}
 
 	public static function render(): string {
@@ -20,7 +41,12 @@ final class UnderTheHood {
 		$here     = remove_query_arg( 'engine' );
 
 		ob_start();
-		echo '<details class="uth" open><summary>' . esc_html__( 'Under the hood', 'meili-demo' ) . '</summary>';
+		printf(
+			'<aside id="%1$s" class="uth" aria-labelledby="%1$s-title" hidden><div class="uth__head"><h2 id="%1$s-title">%2$s</h2><button type="button" class="uth__close" aria-label="%3$s">&times;</button></div>',
+			esc_attr( self::ID ),
+			esc_html__( 'Under the hood', 'meili-demo' ),
+			esc_attr__( 'Close', 'meili-demo' )
+		);
 		if ( $mysql ) {
 			echo '<p class="uth__sub"><strong>' . esc_html__( 'Served by MySQL', 'meili-demo' ) . '</strong>: ' . esc_html( self::reason( $calls ) ) . '</p>';
 		} else {
@@ -69,7 +95,7 @@ final class UnderTheHood {
 			Engine::is_mysql() ? ' aria-current="page"' : '',
 			esc_html__( 'Compare with MySQL', 'meili-demo' )
 		);
-		echo '</details>';
+		echo '</aside>';
 		return (string) ob_get_clean();
 	}
 

@@ -80,7 +80,7 @@ img { max-width: 100%; height: auto; }
 .wc-block-product ins, .mp-product ins { color: var(--mp-crimson); font-weight: 600; text-decoration: none; }
 
 /* Search & archive: filters | results | under the hood */
-.mp-serp { display: grid; grid-template-columns: 230px minmax(0, 1fr) 320px; gap: 34px; padding: 30px var(--mp-gutter) 44px; align-items: start; }
+.mp-serp { display: grid; grid-template-columns: 230px minmax(0, 1fr); gap: 34px; padding: 30px var(--mp-gutter) 44px; align-items: start; }
 .mp-serp--archive { grid-template-columns: 230px minmax(0, 1fr); }
 .mp-q { font-size: 36px; margin: 0; }
 .mp-tools { font-size: 13px; color: var(--mp-muted); margin: 6px 0 4px; align-items: center; }
@@ -110,7 +110,6 @@ img { max-width: 100%; height: auto; }
 
 @media (max-width: 1100px) {
 	.mp-serp { grid-template-columns: 210px minmax(0, 1fr); }
-	.mp-serp__uth { grid-column: 1 / -1; }
 }
 @media (max-width: 900px) {
 	.mp-header { flex-wrap: wrap; gap: 14px; }
@@ -121,8 +120,8 @@ img { max-width: 100%; height: auto; }
 	.meilisearch-ac { min-width: 0; width: 100%; }
 }
 
-.mp-serp__uth .uth { --uth-bg: #fff; --uth-line: #d8cfbd; --uth-code-bg: #1d1a16; --uth-code: #efe6d6; --uth-muted: #6f6553; --uth-accent: #1d1a16; --uth-accent-ink: #f7f4ee; color: #1d1a16; }
-.mp-serp__uth .uth__tile { background: #f3eee3; color: #1d1a16; }
+body .uth { --uth-bg: #fff; --uth-line: #d8cfbd; --uth-code-bg: #1d1a16; --uth-code: #efe6d6; --uth-muted: #6f6553; --uth-accent: #1d1a16; --uth-accent-ink: #f7f4ee; color: #1d1a16; }
+body .uth__tile { background: #f3eee3; color: #1d1a16; }
 
 /* Product grids: CSS grid instead of WooCommerce's flex widths (the white mat border broke the 3-up layout). */
 .mp-serp .wc-block-product-template, .mp-grid .wc-block-product-template { display: grid !important; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 28px; }
