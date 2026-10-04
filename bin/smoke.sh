@@ -18,14 +18,16 @@ curl -fsS -o /dev/null "$blog/wp-login.php" || fail "blog not serving"
 curl -fsS -o /dev/null "$shop/wp-login.php" || fail "shop not serving"
 
 if [ "${1:-}" = "--restart" ]; then
-	boots_before="$(docker compose logs blog | grep -c '\[demo\] First boot' || true)"
 	before="$(docker compose exec -T blog wp --allow-root post list --post_type=post --format=count)"
+	# Only what the restarted site logs counts: `up --wait` may recreate the container, and a new container's
+	# log starts empty (counting "First boot" lines across containers is meaningless).
+	since="$(date -u +%Y-%m-%dT%H:%M:%SZ)"
 	docker compose restart blog
 	docker compose up --wait blog
 	after="$(docker compose exec -T blog wp --allow-root post list --post_type=post --format=count)"
 	[ "$before" = "$after" ] || fail "restart changed the post count ($before -> $after)"
-	logs="$(docker compose logs blog)"
-	boots_after="$(grep -c '\[demo\] First boot' <<<"$logs" || true)"
-	[ "$boots_after" = "$boots_before" ] || fail "first boot ran again after the restart"
+	logs="$(docker compose logs --since "$since" blog)"
+	grep -q '\[demo\] Ready' <<<"$logs" || fail "blog did not log Ready after the restart"
+	if grep -q '\[demo\] First boot' <<<"$logs"; then fail "first boot ran again after the restart"; fi
 fi
 echo "smoke ok"
