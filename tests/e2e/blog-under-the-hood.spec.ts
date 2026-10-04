@@ -4,6 +4,33 @@ import { wp } from './utils';
 
 const panel = ( page ) => page.locator( '.uth' );
 
+test( 'the panel is hidden until the (i) button opens it', async ( { page } ) => {
+	await page.goto( '/?s=saturn+rngs' );
+	const info = page.getByRole( 'banner' ).getByRole( 'button', { name: 'Under the hood' } );
+	await expect( panel( page ) ).toBeHidden();
+	await expect( info ).toHaveAttribute( 'aria-expanded', 'false' );
+	await info.click();
+	await expect( panel( page ) ).toBeVisible();
+	await expect( info ).toHaveAttribute( 'aria-expanded', 'true' );
+	await page.keyboard.press( 'Escape' );
+	await expect( panel( page ) ).toBeHidden();
+	await info.click();
+	await panel( page ).getByRole( 'button', { name: 'Close' } ).click();
+	await expect( panel( page ) ).toBeHidden();
+} );
+
+test( 'the panel stays open across searches', async ( { page } ) => {
+	await page.goto( '/?s=saturn' );
+	await page.getByRole( 'button', { name: 'Under the hood' } ).click();
+	await page.goto( '/?s=mars' );
+	await expect( panel( page ) ).toBeVisible();
+} );
+
+test( 'the (i) button only appears on search pages', async ( { page } ) => {
+	await page.goto( '/' );
+	await expect( page.locator( '.demo-info' ) ).toHaveCount( 0 );
+} );
+
 test( 'the panel shows the request the plugin sent', async ( { page } ) => {
 	await page.goto( '/?s=saturn+rngs' );
 	await expect( panel( page ) ).toContainText( 'POST /indexes/blog_content/search' );
@@ -19,6 +46,7 @@ test( 'a category link becomes a filter', async ( { page } ) => {
 
 test( 'compare with MySQL switches engines', async ( { page } ) => {
 	await page.goto( '/?s=saturn+rngs' );
+	await page.getByRole( 'button', { name: 'Under the hood' } ).click();
 	await panel( page ).getByRole( 'link', { name: 'Compare with MySQL' } ).click();
 	await expect( page ).toHaveURL( /engine=mysql/ );
 	await expect( panel( page ) ).toContainText( 'Served by MySQL' );
