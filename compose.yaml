@@ -79,6 +79,8 @@ services:
       # Optional, for hosts whose PHP uses a private Meilisearch URL or whose key cannot create keys (see README).
       MEILISEARCH_PUBLIC_HOST: ${MEILISEARCH_PUBLIC_HOST:-}
       MEILISEARCH_SEARCH_KEY: ${MEILISEARCH_SEARCH_KEY:-}
+      # 1 = the public deploy's lockdown: no login over HTTP (fly.toml sets it).
+      DEMO_LOCKDOWN: ${DEMO_LOCKDOWN:-}
     ports:
       - "${BLOG_PORT:-8081}:80"
     volumes:
@@ -128,6 +130,8 @@ services:
       # Optional, for hosts whose PHP uses a private Meilisearch URL or whose key cannot create keys (see README).
       MEILISEARCH_PUBLIC_HOST: ${MEILISEARCH_PUBLIC_HOST:-}
       MEILISEARCH_SEARCH_KEY: ${MEILISEARCH_SEARCH_KEY:-}
+      # 1 = the public deploy's lockdown: no login over HTTP (fly.toml sets it).
+      DEMO_LOCKDOWN: ${DEMO_LOCKDOWN:-}
     ports:
       - "${SHOP_PORT:-8082}:80"
     volumes:
