@@ -117,6 +117,8 @@ Each site is one Fly app: WordPress and MariaDB on one machine, with a volume fo
 4. Deploy: `bin/fly-deploy.sh blog` and `bin/fly-deploy.sh shop`. The script stages the plugin source from `MEILISEARCH_PLUGIN_PATH` into `.plugin/`, because Fly's builder has no named build contexts.
 5. Watch `fly logs -a meili-wp-blog` until `[demo] Ready`. The first boot imports and indexes everything.
 
+The deployed sites have no login page and no admin over HTTP (`DEMO_LOCKDOWN = "1"` in `fly.toml`): Apache refuses `wp-login.php`, `xmlrpc.php` and `wp-admin/` except `admin-ajax.php` (`docker/apache-lockdown.conf`), and WordPress turns down every login and hides WooCommerce's account page (`Hardening.php`). Administer them with WP-CLI: `fly ssh console -a meili-wp-blog -C "wp --path=/data/html post list"`. To try the lockdown locally, start a site with `DEMO_LOCKDOWN=1`.
+
 To reset a site, destroy its volume, create a new one and deploy again.
 
 ## Reset (local)

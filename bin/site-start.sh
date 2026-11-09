@@ -67,6 +67,7 @@ define( 'MEILI_DEMO_SITE', $(php_str "$SITE") );
 define( 'MEILI_DEMO_SITE_DIR', $(php_str "$site_dir") );
 define( 'MEILI_DEMO_INDEX_PREFIX', $(php_str "$MEILISEARCH_INDEX_PREFIX") );
 define( 'MEILI_DEMO_PUBLIC_HOST', $(php_str "${MEILISEARCH_PUBLIC_HOST:-}") );
+define( 'MEILI_DEMO_LOCKDOWN', $(php_str "${DEMO_LOCKDOWN:-}") );
 define( 'DISALLOW_FILE_EDIT', true );
 define( 'DISALLOW_FILE_MODS', true );
 define( 'AUTOMATIC_UPDATER_DISABLED', true );

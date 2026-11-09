@@ -13,6 +13,8 @@ primary_region = "cdg"
   DB_NAME = "blog"
   MEILISEARCH_INDEX_PREFIX = "blog"
   WP_ENVIRONMENT_TYPE = "production"
+  # Logins and wp-admin off over HTTP (docker/apache-lockdown.conf, Hardening.php). Use WP-CLI via fly ssh console.
+  DEMO_LOCKDOWN = "1"
   DB_USER = "wp"
   DB_HOST = "127.0.0.1"
   # One shared-cpu-2x machine also runs MariaDB: two import processes on first boot.
@@ -34,7 +36,7 @@ primary_region = "cdg"
     grace_period = "1800s"
     interval = "30s"
     method = "GET"
-    path = "/wp-login.php"
+    path = "/robots.txt"
     timeout = "10s"
 
 [[vm]]

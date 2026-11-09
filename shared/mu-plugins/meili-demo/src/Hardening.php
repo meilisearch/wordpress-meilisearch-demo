@@ -1,9 +1,21 @@
 <?php
 namespace MeiliDemo;
 
-/** Public-demo hardening: no XML-RPC, no anonymous user listing, no new comments, no orders. */
+/**
+ * Public-demo hardening: no XML-RPC, no anonymous user listing, no author archives, no new comments, no orders.
+ * With MEILI_DEMO_LOCKDOWN (the Fly deploy), no one can log in over HTTP: WP-CLI is the only way in.
+ */
 final class Hardening {
 	public static function register(): void {
+		// Author archives and the users sitemap give away login names (?author=1 redirects to the admin's).
+		add_filter( 'wp_sitemaps_add_provider', static fn ( $provider, string $name ) => 'users' === $name ? false : $provider, 10, 2 );
+		add_action( 'template_redirect', array( self::class, 'not_found_if_hidden' ), 1 );
+		if ( self::locked() ) {
+			add_filter( 'authenticate', static fn () => new \WP_Error( 'demo_locked', 'Logins are off on this demo.' ), 100 );
+			add_filter( 'determine_current_user', static fn () => 0, 100 );
+			add_filter( 'wp_is_application_passwords_available', '__return_false' );
+			add_filter( 'pre_option_woocommerce_enable_checkout_login_reminder', static fn (): string => 'no' );
+		}
 		add_filter( 'xmlrpc_enabled', '__return_false' );
 		add_filter( 'xmlrpc_methods', static fn (): array => array() );
 		add_filter( 'pings_open', '__return_false' );
@@ -31,6 +43,21 @@ final class Hardening {
 		return $result;
 	}
 
+
+	public static function locked(): bool {
+		return defined( 'MEILI_DEMO_LOCKDOWN' ) && '1' === (string) MEILI_DEMO_LOCKDOWN && ! ( defined( 'WP_CLI' ) && WP_CLI );
+	}
+
+	/** Runs before redirect_canonical, which would otherwise send ?author=1 to /author/<login>/. */
+	public static function not_found_if_hidden(): void {
+		$account = self::locked() && function_exists( 'is_account_page' ) && is_account_page(); // WooCommerce's login form.
+		if ( is_author() || $account ) {
+			global $wp_query;
+			$wp_query->set_404();
+			status_header( 404 );
+			nocache_headers();
+		}
+	}
 
 	private static function is_checkout_route( string $route ): bool {
 		return 1 === preg_match( '#^/wc/store(/v\d+)?/checkout\b#', strtolower( $route ) );

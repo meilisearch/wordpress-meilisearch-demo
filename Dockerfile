@@ -58,6 +58,7 @@ CMD ["apache2-foreground"]
 FROM base AS fly
 RUN apt-get update && apt-get install -y --no-install-recommends mariadb-server supervisor && rm -rf /var/lib/apt/lists/*
 COPY docker/supervisord.conf /etc/supervisor/conf.d/demo.conf
+COPY docker/apache-lockdown.conf /etc/apache2/conf-enabled/zz-demo-lockdown.conf
 COPY docker/fly-start.sh /opt/demo/bin/fly-start.sh
 RUN chmod +x /opt/demo/bin/fly-start.sh \
 	&& sed -i 's/^\(opcache.validate_timestamps\).*/\1=0/' /usr/local/etc/php/conf.d/zz-demo.ini
