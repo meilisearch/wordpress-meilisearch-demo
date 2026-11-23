@@ -2,14 +2,19 @@
 namespace MeiliDemo;
 
 /**
- * Public-demo hardening: no XML-RPC, no anonymous user listing, no author archives, no new comments, no orders.
+ * Public-demo hardening: noindex everywhere, no XML-RPC, no anonymous user listing, no author archives, no new comments, no orders.
  * With MEILI_DEMO_LOCKDOWN (the Fly deploy), no one can log in over HTTP: WP-CLI is the only way in.
  */
 final class Hardening {
 	public static function register(): void {
-		// Author archives and the users sitemap give away login names (?author=1 redirects to the admin's).
-		add_filter( 'wp_sitemaps_add_provider', static fn ( $provider, string $name ) => 'users' === $name ? false : $provider, 10, 2 );
+		// Author archives give away login names (?author=1 redirects to the admin's). The users sitemap did too:
+		// sitemaps are off altogether below.
 		add_action( 'template_redirect', array( self::class, 'not_found_if_hidden' ), 1 );
+		// Keep the demos out of search engines. robots.txt still allows crawling on purpose: a crawler has to fetch a
+		// page to see its noindex, and that is what drops pages already indexed. Apache adds the header to static files.
+		add_filter( 'wp_robots', 'wp_robots_no_robots' );
+		add_filter( 'wp_sitemaps_enabled', '__return_false' );
+		add_filter( 'wp_headers', static fn ( array $headers ): array => array( 'X-Robots-Tag' => 'noindex, nofollow' ) + $headers );
 		if ( self::locked() ) {
 			add_filter( 'authenticate', static fn () => new \WP_Error( 'demo_locked', 'Logins are off on this demo.' ), 100 );
 			add_filter( 'determine_current_user', static fn () => 0, 100 );
