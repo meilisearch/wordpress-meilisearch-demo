@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 # Checks the Fly image's Apache: it serves DEMO_ROOT (/data/html), not the base image's /var/www/html, and it
-# refuses the login page and wp-admin (docker/apache-lockdown.conf) while admin-ajax.php stays reachable.
+# refuses the login page and wp-admin (docker/apache-lockdown.conf) while admin-ajax.php stays reachable, and it
+# sends X-Robots-Tag: noindex.
 # Usage: bin/check-fly-image.sh [image]   (default meili-wp-blog:fly, built with --target fly)
 set -euo pipefail
 image="${1:-meili-wp-blog:fly}"
@@ -26,3 +27,6 @@ for path in /wp-login.php /WP-LOGIN.PHP //wp-login.php /xmlrpc.php /wp-admin /wp
 done
 [ "$(code /wp-admin/admin-ajax.php)" = 200 ] || fail "/wp-admin/admin-ajax.php is blocked"
 echo "fly image ok: login page and wp-admin refused, admin-ajax.php served"
+robots="$(curl -sSI "http://127.0.0.1:$port/ping.txt" | tr -d "\r" | grep -i "^x-robots-tag:" || true)"
+echo "$robots" | grep -qi "noindex" || fail "no X-Robots-Tag: noindex on static files"
+echo "fly image ok: X-Robots-Tag noindex"
